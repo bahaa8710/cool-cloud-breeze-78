@@ -1,0 +1,31 @@
+{% comment %}theme-check-disable UndefinedObject{% endcomment %}
+<footer class="footer">
+  <div class="footer-content">
+    <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name }} - Contrôle ton monde ⚡</p>
+    <div class="footer-links">
+      {%- if linklists.footer.links != blank -%}
+        {%- for link in linklists.footer.links -%}
+          <a href="{{ link.url }}">{{ link.title | escape }}</a>
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ pages.about.url }}">À propos</a>
+        <a href="{{ pages.contact.url }}">Contact</a>
+        <a href="{{ pages.privacy-policy.url }}">Confidentialité</a>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "Contrôle ton monde ⚡"
+    }
+  ]
+}
+{% endschema %}

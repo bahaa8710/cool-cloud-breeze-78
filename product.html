@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Ring - Achat Bague Connectée Bluetooth | 19€ au lieu de 29€</title>
+    <meta name="description" content="Acheter la Zen Ring, bague connectée Bluetooth révolutionnaire. Prix de lancement 19€ au lieu de 29€. Livraison gratuite, garantie 30 jours.">
+    
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="Zen Ring - Achat Bague Connectée Bluetooth">
+    <meta property="og:description" content="Prix de lancement 19€ au lieu de 29€. Livraison gratuite en France.">
+    <meta property="og:type" content="product">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1200&q=80">
+    
+    <link rel="canonical" href="https://zenring.fr/product">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Product Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "Zen Ring - Bague Connectée Bluetooth",
+      "description": "La bague connectée qui révolutionne ton quotidien digital",
+      "brand": {
+        "@type": "Brand",
+        "name": "Zen Ring"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "19.00",
+        "priceCurrency": "EUR",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2024-12-31"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "127"
+      },
+      "image": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=400&q=80"
+    }
+    </script>
+</head>
+<body class="product-page">
+    <!-- Navigation -->
+    <nav class="product-nav">
+        <div class="container">
+            <a href="index.html" class="back-link">← Retour à l'accueil</a>
+        </div>
+    </nav>
+
+    <!-- Product Section -->
+    <section class="product-section">
+        <div class="container">
+            <div class="product-grid">
+                <!-- Product Images -->
+                <div class="product-images">
+                    <div class="main-image">
+                        <img id="mainProductImage" 
+                             src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=400&q=80" 
+                             alt="Zen Ring - Bague connectée Bluetooth">
+                        <div class="product-badges">
+                            <span class="badge-new">Nouveau</span>
+                            <span class="badge-discount">-34%</span>
+                        </div>
+                    </div>
+                    <div class="thumbnails">
+                        <button class="thumbnail active" onclick="changeImage(0)">
+                            <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=400&q=80" alt="Vue 1">
+                        </button>
+                        <button class="thumbnail" onclick="changeImage(1)">
+                            <img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=400&q=80" alt="Vue 2">
+                        </button>
+                        <button class="thumbnail" onclick="changeImage(2)">
+                            <img src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=400&q=80" alt="Vue 3">
+                        </button>
+                        <button class="thumbnail" onclick="changeImage(3)">
+                            <img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=400&q=80" alt="Vue 4">
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-info">
+                    <h1>Zen Ring - Bague Connectée Bluetooth</h1>
+                    
+                    <div class="rating">
+                        <div class="stars">
+                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                        </div>
+                        <span class="rating-text">(4.9/5 - 127 avis)</span>
+                    </div>
+
+                    <div class="price-card">
+                        <div class="price-info">
+                            <span class="old-price-large">29,00 €</span>
+                            <span class="new-price-large">19,00 €</span>
+                        </div>
+                        <p class="savings">Économisez 10,00 € (34%)</p>
+                        <div class="shipping-free">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="3" width="15" height="13"/>
+                                <polygon points="16,6 20,6 23,11 23,16 16,16"/>
+                                <circle cx="5.5" cy="18.5" r="2.5"/>
+                                <circle cx="18.5" cy="18.5" r="2.5"/>
+                            </svg>
+                            Livraison gratuite
+                        </div>
+                    </div>
+
+                    <p class="product-description">
+                        La bague connectée qui révolutionne ton quotidien ! Contrôle tes réseaux sociaux, ta musique et tes photos d'un simple geste. 
+                        Design minimaliste et discret pour une technologie innovante à portée de main.
+                    </p>
+
+                    <!-- Options -->
+                    <div class="product-options">
+                        <div class="quantity-option">
+                            <label>Quantité :</label>
+                            <div class="quantity-controls">
+                                <button class="qty-btn" onclick="changeQuantity(-1)">-</button>
+                                <span id="quantity">1</span>
+                                <button class="qty-btn" onclick="changeQuantity(1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buy Button -->
+                    <button class="btn-buy" onclick="addToCart()">
+                        Acheter maintenant
+                    </button>
+
+                    <!-- Features -->
+                    <div class="features-card">
+                        <div class="feature">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            <span>Garantie 30 jours satisfait ou remboursé</span>
+                        </div>
+                        <div class="feature">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            <span>Paiement 100% sécurisé</span>
+                        </div>
+                        <div class="feature">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="3" width="15" height="13"/>
+                                <polygon points="16,6 20,6 23,11 23,16 16,16"/>
+                                <circle cx="5.5" cy="18.5" r="2.5"/>
+                                <circle cx="18.5" cy="18.5" r="2.5"/>
+                            </svg>
+                            <span>Livraison gratuite en France</span>
+                        </div>
+                        <div class="feature">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="1 4 1 10 7 10"/>
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                            </svg>
+                            <span>Stock limité - Commandez vite !</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Tabs -->
+    <section class="product-tabs-section">
+        <div class="container">
+            <!-- Guarantees Row -->
+            <div class="guarantees-row">
+                <div class="guarantee-item">
+                    <div class="guarantee-icon">🛡️</div>
+                    <span>Garantie 30 jours satisfait ou remboursé</span>
+                </div>
+                <div class="guarantee-item">
+                    <div class="guarantee-icon">🔒</div>
+                    <span>Paiement 100% sécurisé</span>
+                </div>
+                <div class="guarantee-item">
+                    <div class="guarantee-icon">🚚</div>
+                    <span>Livraison gratuite en France</span>
+                </div>
+                <div class="guarantee-item">
+                    <div class="guarantee-icon">⏰</div>
+                    <span>Stock limité - Commandez vite !</span>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="showTab('description')">Description</button>
+                    <button class="tab-btn" onclick="showTab('specifications')">Caractéristiques</button>
+                    <button class="tab-btn" onclick="showTab('reviews')">Avis (127)</button>
+                    <button class="tab-btn" onclick="showTab('shipping')">Livraison</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Description Tab -->
+                    <div id="description" class="tab-pane active">
+                        <div class="tab-card">
+                            <h3 class="gradient-text">Description du produit</h3>
+                            <p class="description-text">
+                                La Zen Ring est une bague connectée Bluetooth révolutionnaire qui transforme votre façon d'interagir avec vos appareils. 
+                                Grâce à ses gestes tactiles intuitifs et son design minimaliste, elle devient l'accessoire indispensable de votre quotidien numérique.
+                            </p>
+                            <h4>Fonctionnalités clés :</h4>
+                            <div class="features-grid">
+                                <div class="feature-item">
+                                    <span class="feature-emoji">📱</span>
+                                    <span>Contrôle des réseaux sociaux (TikTok, Instagram, YouTube)</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-emoji">🎶</span>
+                                    <span>Gestion de la musique et du volume</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-emoji">📸</span>
+                                    <span>Déclencheur photo/vidéo à distance</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-emoji">🔋</span>
+                                    <span>Autonomie 72h + boîtier de recharge inclus</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-emoji">📖</span>
+                                    <span>Navigation intuitive pour lire des e-books</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-emoji">🎯</span>
+                                    <span>Compatible iOS et Android</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Specifications Tab -->
+                    <div id="specifications" class="tab-pane">
+                        <div class="tab-card">
+                            <h3 class="gradient-text">Caractéristiques techniques</h3>
+                            <div class="specs-grid">
+                                <div class="spec-item">
+                                    <div class="spec-icon">📏</div>
+                                    <div class="spec-label">Dimensions</div>
+                                    <div class="spec-value">Taille unique ajustable</div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-icon">⚖️</div>
+                                    <div class="spec-label">Poids</div>
+                                    <div class="spec-value">8g ultra-léger</div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-icon">🔋</div>
+                                    <div class="spec-label">Batterie</div>
+                                    <div class="spec-value">Lithium-ion rechargeable</div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-icon">⏱️</div>
+                                    <div class="spec-label">Autonomie</div>
+                                    <div class="spec-value">72 heures d'utilisation</div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-icon">⚡</div>
+                                    <div class="spec-label">Temps de charge</div>
+                                    <div class="spec-value">2 heures (boîtier inclus)</div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-icon">📡</div>
+                                    <div class="spec-label">Connectivité</div>
+                                    <div class="spec-value">Bluetooth 5.0</div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-icon">📱</div>
+                                    <div class="spec-label">Compatibilité</div>
+                                    <div class="spec-value">iOS et Android</div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-icon">💎</div>
+                                    <div class="spec-label">Matériaux</div>
+                                    <div class="spec-value">Titane et silicone médical</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div id="reviews" class="tab-pane">
+                        <div class="tab-card">
+                            <div class="reviews-header">
+                                <div class="rating-large">4.9/5</div>
+                                <div class="stars-large">
+                                    <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                </div>
+                                <p>Basé sur 127 avis</p>
+                            </div>
+
+                            <div class="reviews-list">
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <div class="reviewer">
+                                            <div class="reviewer-avatar">👩‍💼</div>
+                                            <div>
+                                                <div class="reviewer-name">Emma L.</div>
+                                                <div class="review-date">Il y a 2 jours</div>
+                                            </div>
+                                        </div>
+                                        <div class="review-stars">
+                                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                        </div>
+                                    </div>
+                                    <p class="review-text">Géniale pour scroller sur TikTok sans lever le bras ! Design super discret 💍</p>
+                                </div>
+
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <div class="reviewer">
+                                            <div class="reviewer-avatar">👨‍💻</div>
+                                            <div>
+                                                <div class="reviewer-name">Lucas M.</div>
+                                                <div class="review-date">Il y a 5 jours</div>
+                                            </div>
+                                        </div>
+                                        <div class="review-stars">
+                                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                        </div>
+                                    </div>
+                                    <p class="review-text">Perfect pour mes photos Instagram ! Plus besoin de minuteur, je contrôle tout avec ma bague ⚡</p>
+                                </div>
+
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <div class="reviewer">
+                                            <div class="reviewer-avatar">👩‍🎨</div>
+                                            <div>
+                                                <div class="reviewer-name">Sarah K.</div>
+                                                <div class="review-date">Il y a 1 semaine</div>
+                                            </div>
+                                        </div>
+                                        <div class="review-stars">
+                                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                        </div>
+                                    </div>
+                                    <p class="review-text">Révolutionnaire ! Je contrôle ma musique pendant le sport, mes collègues sont jaloux 🎶</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Tab -->
+                    <div id="shipping" class="tab-pane">
+                        <div class="tab-card">
+                            <h3 class="gradient-text">Livraison et retours</h3>
+                            <div class="shipping-grid">
+                                <div class="shipping-card shipping-delivery">
+                                    <h4>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="1" y="3" width="15" height="13"/>
+                                            <polygon points="16,6 20,6 23,11 23,16 16,16"/>
+                                            <circle cx="5.5" cy="18.5" r="2.5"/>
+                                            <circle cx="18.5" cy="18.5" r="2.5"/>
+                                        </svg>
+                                        Livraison gratuite
+                                    </h4>
+                                    <p>Livraison gratuite en France métropolitaine pour toute commande.</p>
+                                    <ul>
+                                        <li>Expédition sous 24-48h</li>
+                                        <li>Livraison en 2-4 jours ouvrés</li>
+                                        <li>Suivi de commande inclus</li>
+                                    </ul>
+                                </div>
+                                <div class="shipping-card shipping-returns">
+                                    <h4>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="1 4 1 10 7 10"/>
+                                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                                        </svg>
+                                        Retours
+                                    </h4>
+                                    <p>Vous avez 30 jours pour retourner votre produit si vous n'êtes pas satisfait.</p>
+                                    <ul>
+                                        <li>Retour gratuit</li>
+                                        <li>Remboursement sous 5-7 jours</li>
+                                        <li>Produit à retourner dans son emballage d'origine</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="product-footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 Zen Ring - Contrôle ton monde ⚡</p>
+                <div class="footer-links">
+                    <a href="#">Mentions légales</a>
+                    <a href="#">CGV</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

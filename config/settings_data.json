@@ -1,0 +1,37 @@
+{
+  "current": {
+    "logo_max_width": 100,
+    "colors_accent_1": "#87CEEB",
+    "colors_accent_2": "#E6E6FA", 
+    "colors_accent_3": "#FFB6C1",
+    "colors_background_1": "#F8FAFC",
+    "colors_background_2": "#F0FFFF",
+    "type_header_font": "inter_n4",
+    "heading_scale": 100,
+    "type_body_font": "inter_n4",
+    "body_scale": 100,
+    "card_style": "card",
+    "show_secondary_image": false,
+    "show_vendor": false,
+    "show_rating": false,
+    "show_dynamic_checkout": true,
+    "cart_type": "notification",
+    "show_cart_note": false,
+    "predictive_search_enabled": true,
+    "currency_code_enabled": true,
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "menu": "main-menu"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "copyright_text": "Contrôle ton monde ⚡"
+        }
+      }
+    }
+  }
+}

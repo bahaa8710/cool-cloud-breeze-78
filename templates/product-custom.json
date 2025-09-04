@@ -1,0 +1,68 @@
+{
+  "sections": {
+    "main": {
+      "type": "product-custom",
+      "blocks": {
+        "color_white": {
+          "type": "color_option",
+          "settings": {
+            "color_name": "Blanc",
+            "color_key": "white",
+            "variant_id": "",
+            "color_image": ""
+          }
+        },
+        "color_black": {
+          "type": "color_option", 
+          "settings": {
+            "color_name": "Noir",
+            "color_key": "black",
+            "variant_id": "",
+            "color_image": ""
+          }
+        },
+        "color_pink": {
+          "type": "color_option",
+          "settings": {
+            "color_name": "Rose", 
+            "color_key": "pink",
+            "variant_id": "",
+            "color_image": ""
+          }
+        },
+        "color_blue": {
+          "type": "color_option",
+          "settings": {
+            "color_name": "Bleu",
+            "color_key": "blue", 
+            "variant_id": "",
+            "color_image": ""
+          }
+        }
+      },
+      "block_order": [
+        "color_white",
+        "color_black", 
+        "color_pink",
+        "color_blue"
+      ],
+      "settings": {
+        "badge_new_text": "Nouveau",
+        "shipping_text": "Livraison gratuite",
+        "color_label": "Couleur",
+        "quantity_label": "Quantité", 
+        "buy_button_text": "Acheter maintenant",
+        "sold_out_text": "Rupture de stock",
+        "default_reviews_count": "127",
+        "show_features": true,
+        "feature_1": "Garantie 30 jours satisfait ou remboursé",
+        "feature_2": "Paiement 100% sécurisé",
+        "feature_3": "Livraison gratuite en France",
+        "feature_4": "Stock limité - Commandez vite !"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

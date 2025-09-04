@@ -1,0 +1,307 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Zen Ring",
+    "theme_version": "1.0.0",
+    "theme_author": "Zen Ring",
+    "theme_documentation_url": "https://help.shopify.com/",
+    "theme_support_url": "https://support.shopify.com/"
+  },
+  {
+    "name": "Logo",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      },
+      {
+        "type": "range",
+        "id": "logo_max_width",
+        "min": 50,
+        "max": 250,
+        "step": 10,
+        "unit": "px",
+        "label": "Custom logo width",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Primary colors"
+      },
+      {
+        "type": "color",
+        "id": "colors_accent_1",
+        "default": "#87CEEB",
+        "label": "Sky Blue",
+        "info": "Used for buttons and accents"
+      },
+      {
+        "type": "color",
+        "id": "colors_accent_2",
+        "default": "#E6E6FA",
+        "label": "Lavender",
+        "info": "Used for secondary elements"
+      },
+      {
+        "type": "color",
+        "id": "colors_accent_3",
+        "default": "#FFB6C1",
+        "label": "Pastel Pink",
+        "info": "Used for highlights"
+      },
+      {
+        "type": "header",
+        "content": "Background colors"
+      },
+      {
+        "type": "color",
+        "id": "colors_background_1",
+        "default": "#F8FAFC",
+        "label": "Cloud White"
+      },
+      {
+        "type": "color",
+        "id": "colors_background_2",
+        "default": "#F0FFFF",
+        "label": "Mint Fresh"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Headings"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "default": "inter_n4",
+        "label": "Font",
+        "info": "Inter font for modern look"
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "min": 100,
+        "max": 150,
+        "step": 5,
+        "unit": "%",
+        "label": "Heading scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Body text"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "default": "inter_n4",
+        "label": "Font",
+        "info": "Inter font for readability"
+      },
+      {
+        "type": "range",
+        "id": "body_scale",
+        "min": 100,
+        "max": 120,
+        "step": 5,
+        "unit": "%",
+        "label": "Body scale",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Product cards",
+    "settings": [
+      {
+        "type": "select",
+        "id": "card_style",
+        "options": [
+          {
+            "value": "standard",
+            "label": "Standard"
+          },
+          {
+            "value": "card",
+            "label": "Card"
+          }
+        ],
+        "default": "card",
+        "label": "Style"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_secondary_image",
+        "default": false,
+        "label": "Show second product image on hover"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "default": false,
+        "label": "Show vendor"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_rating",
+        "default": false,
+        "label": "Show product rating",
+        "info": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/page-types#product-grid-section-settings)"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "options": [
+          {
+            "value": "notification",
+            "label": "Notification"
+          },
+          {
+            "value": "drawer",
+            "label": "Drawer"
+          },
+          {
+            "value": "page",
+            "label": "Page"
+          }
+        ],
+        "default": "notification",
+        "label": "Cart type"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cart_note",
+        "default": false,
+        "label": "Enable cart notes"
+      }
+    ]
+  },
+  {
+    "name": "Checkout",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Dynamic checkout"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_dynamic_checkout",
+        "default": true,
+        "label": "Show dynamic checkout buttons",
+        "info": "Customers can check out directly using a familiar payment method. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)"
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social accounts"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "Twitter",
+        "info": "https://twitter.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook",
+        "info": "https://facebook.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest_link",
+        "label": "Pinterest",
+        "info": "https://pinterest.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "info": "https://instagram.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_link",
+        "label": "TikTok",
+        "info": "https://tiktok.com/@shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_tumblr_link",
+        "label": "Tumblr",
+        "info": "https://shopify.tumblr.com"
+      },
+      {
+        "type": "text",
+        "id": "social_snapchat_link",
+        "label": "Snapchat",
+        "info": "https://snapchat.com/add/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube",
+        "info": "https://youtube.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_vimeo_link",
+        "label": "Vimeo",
+        "info": "https://vimeo.com/shopify"
+      }
+    ]
+  },
+  {
+    "name": "Search",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Search"
+      },
+      {
+        "type": "checkbox",
+        "id": "predictive_search_enabled",
+        "default": true,
+        "label": "Enable predictive search"
+      }
+    ]
+  },
+  {
+    "name": "Currency format",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Currency codes"
+      },
+      {
+        "type": "paragraph",
+        "content": "Cart and checkout prices always show currency codes. Example: $1.00 USD."
+      },
+      {
+        "type": "checkbox",
+        "id": "currency_code_enabled",
+        "default": true,
+        "label": "Show currency codes"
+      }
+    ]
+  }
+]

@@ -1,0 +1,535 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<!-- Navigation -->
+<nav class="product-nav">
+    <div class="container">
+        <a href="{{ routes.root_url }}" class="back-link">← Retour à l'accueil</a>
+    </div>
+</nav>
+
+<!-- Product Section -->
+<section class="product-section">
+    <div class="container">
+        <div class="product-grid">
+            <!-- Product Images -->
+            <div class="product-images">
+                <div class="main-image">
+                    <img id="mainProductImage" 
+                         src="{{ current_variant.featured_image | default: product.featured_image | image_url: width: 800 }}" 
+                         alt="{{ current_variant.featured_image.alt | default: product.featured_image.alt | default: product.title | escape }}"
+                         loading="lazy">
+                    <div class="product-badges">
+                        <div class="badge">
+                            <span class="badge-dot"></span>
+                            <span>Nouveau</span>
+                        </div>
+                        {%- if current_variant.compare_at_price > current_variant.price -%}
+                          {%- assign discount = current_variant.compare_at_price | minus: current_variant.price | times: 100 | divided_by: current_variant.compare_at_price -%}
+                          <div class="urgency-badge">
+                            <span class="urgency-dot"></span>
+                            <span>-{{ discount }}%</span>
+                          </div>
+                        {%- endif -%}
+                    </div>
+                </div>
+                {%- if product.images.size > 1 -%}
+                  <div class="thumbnails">
+                      {%- for image in product.images limit: 4 -%}
+                        <button class="thumbnail{% if forloop.first %} active{% endif %}" onclick="changeImage({{ forloop.index0 }})" type="button">
+                            <img src="{{ image | image_url: width: 400 }}" alt="{{ image.alt | default: product.title | escape }}" loading="lazy">
+                        </button>
+                      {%- endfor -%}
+                  </div>
+                {%- endif -%}
+            </div>
+
+            <!-- Product Info -->
+            <div class="product-info">
+                <h1>{{ product.title }}</h1>
+                
+                {%- if product.metafields.reviews.rating.value != blank -%}
+                  <div class="rating">
+                      <div class="stars">
+                          {%- assign rating = product.metafields.reviews.rating.value | round -%}
+                          {%- for i in (1..5) -%}
+                            {%- if i <= rating -%}
+                              <span>⭐</span>
+                            {%- endif -%}
+                          {%- endfor -%}
+                      </div>
+                      <span class="rating-text">({{ product.metafields.reviews.rating.value }}/5 - {{ product.metafields.reviews.rating_count.value | default: '127' }} avis)</span>
+                  </div>
+                {%- else -%}
+                  <div class="rating">
+                      <div class="stars">
+                          <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                      </div>
+                      <span class="rating-text">(4.9/5 - 127 avis)</span>
+                  </div>
+                {%- endif -%}
+
+                <div class="price-card">
+                    <div class="price-info">
+                        {%- if current_variant.compare_at_price > current_variant.price -%}
+                          <span class="old-price-large">{{ current_variant.compare_at_price | money }}</span>
+                        {%- endif -%}
+                        <span class="new-price-large" id="price-{{ section.id }}">{{ current_variant.price | money }}</span>
+                    </div>
+                    {%- if current_variant.compare_at_price > current_variant.price -%}
+                      {%- assign savings = current_variant.compare_at_price | minus: current_variant.price -%}
+                      {%- assign discount = savings | times: 100 | divided_by: current_variant.compare_at_price -%}
+                      <p class="savings">Économisez {{ savings | money }} ({{ discount }}%)</p>
+                    {%- endif -%}
+                    <div class="shipping-free">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="3" width="15" height="13"/>
+                            <polygon points="16,6 20,6 23,11 23,16 16,16"/>
+                            <circle cx="5.5" cy="18.5" r="2.5"/>
+                            <circle cx="18.5" cy="18.5" r="2.5"/>
+                        </svg>
+                        Livraison gratuite
+                    </div>
+                </div>
+
+                <div class="product-description">
+                    {{ product.description | truncatewords: 50 }}
+                </div>
+
+                <!-- Product Form avec variant-selects pour Shopify 2.0 -->
+                <variant-selects class="no-js-hidden" data-section="{{ section.id }}" data-url="{{ product.url }}">
+                  {%- form 'product', product, id: 'AddToCartForm', class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+                    <!-- Options de variantes -->
+                    <div class="product-options">
+                        {%- unless product.has_only_default_variant -%}
+                          {%- for option in product.options_with_values -%}
+                            <div class="product-form__input product-form__input--dropdown">
+                              <label class="form__label" for="Option-{{ option.position }}">
+                                {{ option.name }}
+                              </label>
+                              <div class="select">
+                                <select name="options[{{ option.name | escape }}]" 
+                                        id="Option-{{ option.position }}" 
+                                        class="select__select">
+                                  {%- for value in option.values -%}
+                                    <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>
+                                      {{ value }}
+                                    </option>
+                                  {%- endfor -%}
+                                </select>
+                              </div>
+                            </div>
+                          {%- endfor -%}
+                        {%- endunless -%}
+
+                        <div class="quantity-option">
+                            <label class="form__label" for="Quantity-{{ section.id }}">Quantité :</label>
+                            <div class="quantity-controls">
+                                <button class="qty-btn" type="button" onclick="changeQuantity(-1, '{{ section.id }}')">-</button>
+                                <input type="number" name="quantity" id="Quantity-{{ section.id }}" min="1" max="10" value="1" class="quantity__input">
+                                <button class="qty-btn" type="button" onclick="changeQuantity(1, '{{ section.id }}')">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bouton Ajouter au panier -->
+                    <button type="submit" 
+                            name="add" 
+                            class="btn-buy btn-add-to-cart"
+                            {%- unless current_variant.available %} disabled{% endunless %}>
+                        <span>
+                          {%- if current_variant.available -%}
+                            {{ section.settings.add_to_cart_text | default: 'Ajouter au panier' }}
+                          {%- else -%}
+                            {{ section.settings.sold_out_text | default: 'Rupture de stock' }}
+                          {%- endif -%}
+                        </span>
+                    </button>
+
+                    <!-- Boutons d'achat dynamiques (Shopify 2.0) -->
+                    {%- if section.settings.show_dynamic_checkout != false -%}
+                      <div class="dynamic-checkout-section">
+                          {{ form | payment_button }}
+                      </div>
+                    {%- endif -%}
+                  {%- endform -%}
+                </variant-selects>
+
+                <!-- Fallback pour JS désactivé -->
+                <noscript class="product-form">
+                  {%- form 'product', product, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                    <button type="submit" name="add" class="btn-buy btn-add-to-cart">
+                      <span>
+                        {%- if current_variant.available -%}
+                          Acheter maintenant
+                        {%- else -%}
+                          Rupture de stock
+                        {%- endif -%}
+                      </span>
+                    </button>
+                  {%- endform -%}
+                </noscript>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Product Tabs -->
+<section class="product-tabs-section">
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('description')">Description</button>
+                <button class="tab-btn" onclick="showTab('reviews')">Avis</button>
+                <button class="tab-btn" onclick="showTab('shipping')">Livraison</button>
+            </div>
+
+            <div class="tab-content">
+                <!-- Description Tab -->
+                <div id="description" class="tab-pane active">
+                    <div class="tab-card">
+                        <h3 class="gradient-text">Description du produit</h3>
+                        {{ product.description }}
+                    </div>
+                </div>
+
+                <!-- Reviews Tab -->
+                <div id="reviews" class="tab-pane">
+                    <div class="tab-card">
+                        <div class="reviews-header">
+                            <div class="rating-large">4.9/5</div>
+                            <div class="stars-large">
+                                <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                            </div>
+                            <p>Basé sur 127 avis</p>
+                        </div>
+
+                        {%- if product.metafields.reviews.content != blank -%}
+                          {{ product.metafields.reviews.content }}
+                        {%- else -%}
+                          <div class="reviews-list">
+                              <div class="review-item">
+                                  <div class="review-header">
+                                      <div class="reviewer">
+                                          <div class="reviewer-avatar">👩‍💼</div>
+                                          <div>
+                                              <div class="reviewer-name">Emma L.</div>
+                                              <div class="review-date">Il y a 2 jours</div>
+                                          </div>
+                                      </div>
+                                      <div class="review-stars">
+                                          <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                      </div>
+                                  </div>
+                                  <p class="review-content">
+                                      Géniale pour scroller sur TikTok sans lever le bras ! Design super discret et élégant. 
+                                      L'autonomie est vraiment impressionnante, je la charge une fois par semaine maximum.
+                                  </p>
+                              </div>
+                          </div>
+                        {%- endif -%}
+                    </div>
+                </div>
+
+                <!-- Shipping Tab -->
+                <div id="shipping" class="tab-pane">
+                    <div class="tab-card">
+                        <h3 class="gradient-text">Livraison et retours</h3>
+                        {%- if product.metafields.shipping.content != blank -%}
+                          {{ product.metafields.shipping.content }}
+                        {%- else -%}
+                          <div class="shipping-info">
+                              <div class="shipping-item">
+                                  <div class="shipping-icon">🚚</div>
+                                  <div>
+                                      <h4>Livraison gratuite en France</h4>
+                                      <p>Expédition sous 24h ouvrées. Livraison en 2-3 jours ouvrés par Colissimo.</p>
+                                  </div>
+                              </div>
+                              <div class="shipping-item">
+                                  <div class="shipping-icon">🌍</div>
+                                  <div>
+                                      <h4>Livraison internationale</h4>
+                                      <p>Disponible dans toute l'Europe. Délais de 5-7 jours ouvrés.</p>
+                                  </div>
+                              </div>
+                              <div class="shipping-item">
+                                  <div class="shipping-icon">↩️</div>
+                                  <div>
+                                      <h4>Retours gratuits</h4>
+                                      <p>30 jours pour changer d'avis. Retour gratuit et remboursement intégral.</p>
+                                  </div>
+                              </div>
+                          </div>
+                        {%- endif -%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+  // Product images array
+  const productImages{{ section.id }} = [
+    {%- for image in product.images -%}
+      "{{ image | image_url: width: 800 }}"{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ];
+
+  // Change image function
+  function changeImage(index) {
+    const mainImage = document.getElementById('mainProductImage');
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    
+    if (mainImage && index >= 0 && index < productImages{{ section.id }}.length) {
+        mainImage.src = productImages{{ section.id }}[index];
+        
+        // Update active thumbnail
+        thumbnails.forEach((thumb, i) => {
+            thumb.classList.toggle('active', i === index);
+        });
+    }
+  }
+
+  // Quantity control functions
+  function changeQuantity(delta, sectionId) {
+    const quantityInput = document.getElementById('Quantity-' + sectionId);
+    if (!quantityInput) return;
+    
+    const newQuantity = parseInt(quantityInput.value) + delta;
+    
+    if (newQuantity >= 1 && newQuantity <= 10) {
+        quantityInput.value = newQuantity;
+        
+        // Update dynamic checkout forms quantity if exists
+        const buyNowQuantity = document.querySelector('.dynamic-checkout-section input[name="quantity"]');
+        if (buyNowQuantity) {
+            buyNowQuantity.value = newQuantity;
+        }
+    }
+  }
+
+  // Tab functionality
+  function showTab(tabId) {
+    // Hide all tab panes
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.remove('active');
+    });
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab
+    const selectedTab = document.getElementById(tabId);
+    if (selectedTab) {
+        selectedTab.classList.add('active');
+    }
+    
+    // Add active class to clicked button
+    event.target.classList.add('active');
+  }
+
+  // Variant selector compatible avec Shopify 2.0
+  class VariantSelects extends HTMLElement {
+    constructor() {
+      super();
+      this.addEventListener('change', this.onVariantChange);
+    }
+
+    onVariantChange() {
+      this.updateOptions();
+      this.updateMasterId();
+      this.toggleAddButton(true, '', false);
+
+      if (!this.currentVariant) {
+        this.toggleAddButton(true, '', true);
+        this.setUnavailable();
+      } else {
+        this.updateMedia();
+        this.updateURL();
+        this.updateVariantInput();
+        this.renderProductInfo();
+      }
+    }
+
+    updateOptions() {
+      this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
+    }
+
+    updateMasterId() {
+      this.currentVariant = this.getVariantData().find((variant) => {
+        return !variant.options.map((option, index) => {
+          return this.options[index] === option;
+        }).includes(false);
+      });
+    }
+
+    updateMedia() {
+      if (!this.currentVariant) return;
+      if (!this.currentVariant.featured_media) return;
+
+      // Update main product image
+      const mainImage = document.getElementById('mainProductImage');
+      if (mainImage && this.currentVariant.featured_image) {
+        mainImage.src = this.currentVariant.featured_image.src;
+        mainImage.alt = this.currentVariant.featured_image.alt || this.currentVariant.name;
+      }
+    }
+
+    updateURL() {
+      if (!this.currentVariant || this.dataset.updateUrl === 'false') return;
+      window.history.replaceState({ }, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+    }
+
+    updateVariantInput() {
+      const productForms = document.querySelectorAll(`#AddToCartForm, form[data-type="add-to-cart-form"]`);
+      productForms.forEach((productForm) => {
+        const input = productForm.querySelector('input[name="id"]');
+        if (input) {
+          input.value = this.currentVariant.id;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+
+      // Update dynamic checkout forms too
+      const dynamicForms = document.querySelectorAll('.dynamic-checkout-section input[name="id"]');
+      dynamicForms.forEach(input => {
+        input.value = this.currentVariant.id;
+      });
+    }
+
+    renderProductInfo() {
+      if (!this.currentVariant) return;
+      
+      const requestedVariantId = this.currentVariant.id;
+      const sectionId = this.dataset.section;
+
+      // Update price directly from variant data
+      const priceElement = document.getElementById(`price-${sectionId}`);
+      if (priceElement && this.currentVariant.price) {
+        const formattedPrice = new Intl.NumberFormat('fr-FR', {
+          style: 'currency',
+          currency: 'EUR'
+        }).format(this.currentVariant.price / 100);
+        priceElement.textContent = formattedPrice;
+      }
+
+      // Update compare at price if exists
+      const oldPriceElement = document.querySelector('.old-price-large');
+      if (oldPriceElement && this.currentVariant.compare_at_price) {
+        const formattedComparePrice = new Intl.NumberFormat('fr-FR', {
+          style: 'currency',
+          currency: 'EUR'
+        }).format(this.currentVariant.compare_at_price / 100);
+        oldPriceElement.textContent = formattedComparePrice;
+      }
+
+      this.toggleAddButton(!this.currentVariant.available, 'Rupture de stock');
+    }
+
+    toggleAddButton(disable = true, text, modifyClass = true) {
+      const productForm = document.getElementById('AddToCartForm');
+      if (!productForm) return;
+
+      const addButton = productForm.querySelector('[name="add"]');
+      const addButtonText = productForm.querySelector('[name="add"] > span');
+      if (!addButton) return;
+
+      if (disable) {
+        addButton.setAttribute('disabled', 'disabled');
+        if (text) addButtonText.textContent = text;
+      } else {
+        addButton.removeAttribute('disabled');
+        addButtonText.textContent = 'Ajouter au panier';
+      }
+    }
+
+    setUnavailable() {
+      const addButton = document.querySelector('#AddToCartForm [name="add"]');
+      const addButtonText = document.querySelector('#AddToCartForm [name="add"] > span');
+      const price = document.getElementById(`price-${this.dataset.section}`);
+      
+      if (addButton && addButtonText) {
+        addButtonText.textContent = 'Non disponible';
+        addButton.setAttribute('disabled', 'disabled');
+      }
+      if (price) price.classList.add('visibility-hidden');
+    }
+
+    getVariantData() {
+      this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+      return this.variantData;
+    }
+  }
+
+  // Register custom element
+  customElements.define('variant-selects', VariantSelects);
+
+  // Initialize when DOM is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize variant selects if exists
+    const variantSelects = document.querySelector('variant-selects');
+    if (variantSelects) {
+      // Trigger initial update
+      variantSelects.dispatchEvent(new Event('change'));
+    }
+  });
+</script>
+
+<script type="application/json">
+  {{ product.variants | json }}
+</script>
+
+{% schema %}
+{
+  "name": "Product Template",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "default": true,
+      "label": "Afficher les boutons d'achat rapide"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity_selector",
+      "default": true,
+      "label": "Afficher le sélecteur de quantité"
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_text",
+      "default": "Ajouter au panier",
+      "label": "Texte du bouton Ajouter au panier"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_text",
+      "default": "Rupture de stock",
+      "label": "Texte rupture de stock"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Bloc de texte",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Bloc de texte",
+          "label": "Texte"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

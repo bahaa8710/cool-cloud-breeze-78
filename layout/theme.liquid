@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="{{ settings.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | img_url: '32x32' }}">
+    {%- endif -%}
+    
+    {%- capture seo_title -%}
+      {%- if request.page_type == 'search' and search.performed == true -%}
+        {{ 'general.search.heading' | t: count: search.results_count }}: {{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count }}
+      {%- else -%}
+        {{ page_title }}
+      {%- endif -%}
+      {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- assign escaped_page_title = page_title | escape -%}
+      {%- unless escaped_page_title contains shop.name -%}
+        &ndash; {{ shop.name | escape }}
+      {%- endunless -%}
+    {%- endcapture -%}
+    <title>{{ seo_title | strip }}</title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- unless settings.social_sharing_image == blank -%}
+      <meta property="og:image" content="http:{{ settings.social_sharing_image | img_url: '1200x630' }}">
+      <meta property="og:image:secure_url" content="https:{{ settings.social_sharing_image | img_url: '1200x630' }}">
+      <meta property="og:image:width" content="1200">
+      <meta property="og:image:height" content="630">
+    {%- endunless -%}
+
+    <meta property="og:site_name" content="{{ shop.name }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:title" content="{{ escaped_page_title }}">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="{{ page_description | default: shop.description | default: shop.name }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ escaped_page_title }}">
+    <meta name="twitter:description" content="{{ page_description | default: shop.description | default: shop.name }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" preconnect>
+    
+    {{ content_for_header }}
+
+    {{ 'style.css' | asset_url | stylesheet_tag }}
+    
+    {%- if request.page_type contains 'customers/' -%}
+      {{ 'customer.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      if (Shopify.designMode) {
+        document.documentElement.classList.add('shopify-design-mode');
+      }
+    </script>
+
+    {%- if template contains 'product' -%}
+      <script type="application/ld+json">
+      {
+        "@context": "http://schema.org/",
+        "@type": "Product",
+        "name": {{ product.title | json }},
+        "url": {{ shop.url | append: product.url | json }},
+        {%- if seo_media -%}
+          "image": [
+            {{ seo_media | img_url: '1080x' | prepend: "https:" | json }}
+          ],
+        {%- endif -%}
+        "description": {{ product.description | strip_html | json }},
+        {%- if product.selected_or_first_available_variant -%}
+          {%- assign variant = product.selected_or_first_available_variant -%}
+          "sku": {{ variant.sku | json }},
+          "mpn": {{ variant.barcode | default: variant.sku | json }},
+          "offers": [
+            {
+              "@type": "Offer",
+              "availability": "https://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+              "price": {{ variant.price | divided_by: 100.0 | json }},
+              "priceCurrency": {{ cart.currency.iso_code | json }},
+              "url": {{ shop.url | append: variant.url | json }}
+            }
+          ],
+        {%- endif -%}
+        "brand": {
+          "@type": "Brand",
+          "name": {{ product.vendor | json }}
+        }
+      }
+      </script>
+    {%- endif -%}
+</head>
+
+<body class="{% if customer %}customer-logged-in {% endif %}template-{{ request.page_type | handle }}">
+  <a class="skip-to-content-link button visually-hidden" href="#MainContent">
+    {{ 'accessibility.skip_to_text' | t }}
+  </a>
+
+  <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {% section 'footer' %}
+
+  <ul hidden>
+    <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+    <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+  </ul>
+
+  <script>
+    window.shopUrl = '{{ shop.url }}';
+    window.routes = {
+      cart_add_url: '{{ routes.cart_add_url }}',
+      cart_change_url: '{{ routes.cart_change_url }}',
+      cart_update_url: '{{ routes.cart_update_url }}',
+      cart_url: '{{ routes.cart_url }}',
+      predictive_search_url: '{{ routes.predictive_search_url }}'
+    };
+
+    window.cartStrings = {
+      error: `{{ 'sections.cart.cart_error' | t }}`,
+      quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`
+    }
+
+    window.variantStrings = {
+      addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+      soldOut: `{{ 'products.product.sold_out' | t }}`,
+      unavailable: `{{ 'products.product.unavailable' | t }}`,
+    }
+  </script>
+
+  {{ 'script.js' | asset_url | script_tag }}
+
+  {%- if settings.predictive_search_enabled -%}
+    <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+  {%- endif -%}
+</body>
+</html>

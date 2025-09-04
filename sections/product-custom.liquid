@@ -1,0 +1,370 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<style>
+  .product-custom-section {
+    padding: 2rem 0;
+  }
+  
+  .product-grid-custom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .product-grid-custom {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>
+
+<!-- Navigation -->
+<nav class="product-nav">
+    <div class="container">
+        <a href="{{ routes.root_url }}" class="back-link">← Retour à l'accueil</a>
+    </div>
+</nav>
+
+<!-- Product Section -->
+<section class="product-custom-section">
+    <div class="container">
+        <div class="product-grid-custom">
+            <!-- Product Images -->
+            <div class="product-images">
+                <div class="main-image">
+                    <img id="mainProductImageCustom" 
+                         src="{{ current_variant.featured_image | default: product.featured_image | img_url: '800x' }}" 
+                         alt="{{ current_variant.featured_image.alt | default: product.featured_image.alt | default: product.title | escape }}"
+                         data-current-variant="{{ current_variant.id }}">
+                    <div class="product-badges">
+                        <span class="badge-new">{{ section.settings.badge_new_text | default: 'Nouveau' }}</span>
+                        {%- if current_variant.compare_at_price > current_variant.price -%}
+                          {%- assign discount = current_variant.compare_at_price | minus: current_variant.price | times: 100 | divided_by: current_variant.compare_at_price -%}
+                          <span class="badge-discount">-{{ discount }}%</span>
+                        {%- endif -%}
+                    </div>
+                </div>
+                {%- if product.images.size > 1 -%}
+                  <div class="thumbnails">
+                      {%- for image in product.images limit: 4 -%}
+                        <button class="thumbnail{% if forloop.first %} active{% endif %}" onclick="changeImageCustom({{ forloop.index0 }})">
+                            <img src="{{ image | img_url: '400x' }}" alt="{{ image.alt | default: product.title | escape }}">
+                        </button>
+                      {%- endfor -%}
+                  </div>
+                {%- endif -%}
+            </div>
+
+            <!-- Product Info -->
+            <div class="product-info">
+                <h1>{{ product.title }}</h1>
+                
+                {%- if product.metafields.reviews.rating.value != blank -%}
+                  <div class="rating">
+                      <div class="stars">
+                          {%- assign rating = product.metafields.reviews.rating.value | round -%}
+                          {%- for i in (1..5) -%}
+                            {%- if i <= rating -%}
+                              <span>⭐</span>
+                            {%- endif -%}
+                          {%- endfor -%}
+                      </div>
+                      <span class="rating-text">({{ product.metafields.reviews.rating.value }}/5 - {{ product.metafields.reviews.rating_count.value | default: '127' }} avis)</span>
+                  </div>
+                {%- else -%}
+                  <div class="rating">
+                      <div class="stars">
+                          <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                      </div>
+                      <span class="rating-text">(4.9/5 - {{ section.settings.default_reviews_count | default: '127' }} avis)</span>
+                  </div>
+                {%- endif -%}
+
+                <div class="price-card">
+                    <div class="price-info">
+                        {%- if current_variant.compare_at_price > current_variant.price -%}
+                          <span class="old-price-large">{{ current_variant.compare_at_price | money }}</span>
+                        {%- endif -%}
+                        <span class="new-price-large" id="price-custom-{{ section.id }}">{{ current_variant.price | money }}</span>
+                    </div>
+                    {%- if current_variant.compare_at_price > current_variant.price -%}
+                      {%- assign savings = current_variant.compare_at_price | minus: current_variant.price -%}
+                      {%- assign discount = savings | times: 100 | divided_by: current_variant.compare_at_price -%}
+                      <p class="savings">Économisez {{ savings | money }} ({{ discount }}%)</p>
+                    {%- endif -%}
+                    <div class="shipping-free">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="3" width="15" height="13"/>
+                            <polygon points="16,6 20,6 23,11 23,16 16,16"/>
+                            <circle cx="5.5" cy="18.5" r="2.5"/>
+                            <circle cx="18.5" cy="18.5" r="2.5"/>
+                        </svg>
+                        {{ section.settings.shipping_text | default: 'Livraison gratuite' }}
+                    </div>
+                </div>
+
+                <div class="product-description">
+                    {{ section.settings.product_description | default: product.description | truncatewords: 50 }}
+                </div>
+
+                <!-- Product Form -->
+                <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" id="AddToCartFormCustom-{{ section.id }}">
+                    <!-- Options -->
+                    <div class="product-options">
+                        <div class="quantity-option">
+                            <label class="form__label" for="QuantityCustom-{{ section.id }}">{{ section.settings.quantity_label | default: 'Quantité' }} :</label>
+                            <div class="quantity-controls">
+                                <button class="qty-btn" type="button" onclick="changeQuantityCustom(-1, '{{ section.id }}')">-</button>
+                                <input type="number" name="quantity" id="QuantityCustom-{{ section.id }}" min="1" value="1" class="quantity__input">
+                                <button class="qty-btn" type="button" onclick="changeQuantityCustom(1, '{{ section.id }}')">+</button>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="id" id="variantIdCustom-{{ section.id }}" value="{{ current_variant.id }}">
+                    </div>
+
+                    <!-- Regular Add to Cart Button -->
+                    <button type="submit" name="add" class="btn-buy btn-add-to-cart" id="addToCartCustom-{{ section.id }}">
+                        <span>
+                          {%- if current_variant.available -%}
+                            Ajouter au panier
+                          {%- else -%}
+                            {{ section.settings.sold_out_text | default: 'Rupture de stock' }}
+                          {%- endif -%}
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Dynamic Checkout Buttons (Shop Pay, etc.) -->
+                {%- if settings.show_dynamic_checkout -%}
+                {%- form 'product', product, id: 'BuyNowFormCustom', class: 'dynamic-checkout-form' -%}
+                    <input type="hidden" name="id" value="{{ current_variant.id }}">
+                    <input type="hidden" name="quantity" value="1">
+                    
+                    <div class="dynamic-checkout-section">
+                        <div class="shopify-payment-button" data-shopify="payment-button">
+                            {{ form | payment_button }}
+                        </div>
+                    </div>
+                {%- endform -%}
+                {%- endif -%}
+
+                <!-- Features -->
+                {%- if section.settings.show_features -%}
+                  <div class="features-card">
+                      <div class="feature">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                          </svg>
+                          <span>{{ section.settings.feature_1 | default: 'Garantie 30 jours satisfait ou remboursé' }}</span>
+                      </div>
+                      <div class="feature">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                          </svg>
+                          <span>{{ section.settings.feature_2 | default: 'Paiement 100% sécurisé' }}</span>
+                      </div>
+                      <div class="feature">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <rect x="1" y="3" width="15" height="13"/>
+                              <polygon points="16,6 20,6 23,11 23,16 16,16"/>
+                              <circle cx="5.5" cy="18.5" r="2.5"/>
+                              <circle cx="18.5" cy="18.5" r="2.5"/>
+                          </svg>
+                          <span>{{ section.settings.feature_3 | default: 'Livraison gratuite en France' }}</span>
+                      </div>
+                      <div class="feature">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <polyline points="1 4 1 10 7 10"/>
+                              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                          </svg>
+                          <span>{{ section.settings.feature_4 | default: 'Stock limité - Commandez vite !' }}</span>
+                      </div>
+                  </div>
+                {%- endif -%}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+  // Store color configuration for this section
+  window.customColorConfig{{ section.id }} = {
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'color_option' -%}
+          '{{ block.settings.color_key }}': {
+            variantId: '{{ block.settings.variant_id }}',
+            image: '{{ block.settings.color_image | img_url: '800x' }}',
+            name: '{{ block.settings.color_name }}'
+          }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endcase -%}
+    {%- endfor -%}
+  };
+
+  // Product images array for this section
+  const productImagesCustom{{ section.id }} = [
+    {%- for image in product.images -%}
+      "{{ image | img_url: '800x' }}"{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ];
+</script>
+
+{% schema %}
+{
+  "name": "Produit personnalisé",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "badge_new_text",
+      "label": "Texte badge nouveau",
+      "default": "Nouveau"
+    },
+    {
+      "type": "text",
+      "id": "shipping_text", 
+      "label": "Texte livraison",
+      "default": "Livraison gratuite"
+    },
+    {
+      "type": "textarea",
+      "id": "product_description",
+      "label": "Description produit personnalisée",
+      "info": "Laissez vide pour utiliser la description du produit"
+    },
+    {
+      "type": "text",
+      "id": "color_label",
+      "label": "Label sélecteur couleur",
+      "default": "Couleur"
+    },
+    {
+      "type": "text",
+      "id": "quantity_label",
+      "label": "Label quantité",
+      "default": "Quantité"
+    },
+    {
+      "type": "text",
+      "id": "buy_button_text",
+      "label": "Texte bouton achat",
+      "default": "Acheter maintenant"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_text",
+      "label": "Texte rupture de stock",
+      "default": "Rupture de stock"
+    },
+    {
+      "type": "text",
+      "id": "default_reviews_count",
+      "label": "Nombre d'avis par défaut",
+      "default": "127"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Afficher les caractéristiques",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "feature_1",
+      "label": "Caractéristique 1",
+      "default": "Garantie 30 jours satisfait ou remboursé"
+    },
+    {
+      "type": "text",
+      "id": "feature_2",
+      "label": "Caractéristique 2", 
+      "default": "Paiement 100% sécurisé"
+    },
+    {
+      "type": "text",
+      "id": "feature_3",
+      "label": "Caractéristique 3",
+      "default": "Livraison gratuite en France"
+    },
+    {
+      "type": "text",
+      "id": "feature_4",
+      "label": "Caractéristique 4",
+      "default": "Stock limité - Commandez vite !"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "color_option",
+      "name": "Option couleur",
+      "settings": [
+        {
+          "type": "text",
+          "id": "color_name",
+          "label": "Nom de la couleur",
+          "default": "Blanc"
+        },
+        {
+          "type": "text",
+          "id": "color_key",
+          "label": "Clé couleur (pour CSS)",
+          "default": "white",
+          "info": "Utilisez: white, black, pink, blue"
+        },
+        {
+          "type": "text",
+          "id": "variant_id",
+          "label": "ID de la variante Shopify",
+          "info": "ID numérique de la variante dans Shopify"
+        },
+        {
+          "type": "image_picker",
+          "id": "color_image",
+          "label": "Image pour cette couleur"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Produit personnalisé",
+      "blocks": [
+        {
+          "type": "color_option",
+          "settings": {
+            "color_name": "Blanc",
+            "color_key": "white"
+          }
+        },
+        {
+          "type": "color_option", 
+          "settings": {
+            "color_name": "Noir",
+            "color_key": "black"
+          }
+        },
+        {
+          "type": "color_option",
+          "settings": {
+            "color_name": "Rose",
+            "color_key": "pink"
+          }
+        },
+        {
+          "type": "color_option",
+          "settings": {
+            "color_name": "Bleu",
+            "color_key": "blue"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

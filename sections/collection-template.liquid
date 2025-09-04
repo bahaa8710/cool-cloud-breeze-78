@@ -1,0 +1,184 @@
+{%- paginate collection.products by section.settings.products_per_page -%}
+  
+  <div class="collection-hero">
+    <div class="container">
+      <h1 class="collection-title">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="collection-description">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="collection-content">
+      
+      {%- if collection.products.size == 0 -%}
+        <div class="collection-empty">
+          <h2>{{ 'sections.collection_template.empty' | t }}</h2>
+          <a href="{{ routes.collections_url }}" class="btn-primary">
+            {{ 'general.continue_shopping' | t }}
+          </a>
+        </div>
+      {%- else -%}
+        
+        <div class="collection-toolbar">
+          <div class="collection-count">
+            {{ 'templates.collection.product_count' | t: count: collection.products_count }}
+          </div>
+          
+          <div class="collection-sorting">
+            <label for="SortBy" class="visually-hidden">{{ 'collections.sorting.title' | t }}</label>
+            <select name="SortBy" id="SortBy" class="collection-sort-select">
+              <option value="manual">{{ 'collections.sorting.featured' | t }}</option>
+              <option value="best-selling" {% if collection.sort_by == collection.default_sort_by %}selected="selected"{% endif %}>{{ 'collections.sorting.best_selling' | t }}</option>
+              <option value="title-ascending" {% if collection.sort_by == 'title-ascending' %}selected="selected"{% endif %}>{{ 'collections.sorting.az' | t }}</option>
+              <option value="title-descending" {% if collection.sort_by == 'title-descending' %}selected="selected"{% endif %}>{{ 'collections.sorting.za' | t }}</option>
+              <option value="price-ascending" {% if collection.sort_by == 'price-ascending' %}selected="selected"{% endif %}>{{ 'collections.sorting.price_ascending' | t }}</option>
+              <option value="price-descending" {% if collection.sort_by == 'price-descending' %}selected="selected"{% endif %}>{{ 'collections.sorting.price_descending' | t }}</option>
+              <option value="created-descending" {% if collection.sort_by == 'created-descending' %}selected="selected"{% endif %}>{{ 'collections.sorting.date_descending' | t }}</option>
+              <option value="created-ascending" {% if collection.sort_by == 'created-ascending' %}selected="selected"{% endif %}>{{ 'collections.sorting.date_ascending' | t }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="product-grid">
+          {%- for product in collection.products -%}
+            <div class="product-card">
+              <div class="product-card-image">
+                <a href="{{ product.url }}">
+                  {%- if product.featured_image -%}
+                    <img src="{{ product.featured_image | img_url: '400x' }}" 
+                         alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                         loading="lazy">
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  {%- endif -%}
+                </a>
+                
+                {%- if product.compare_at_price > product.price -%}
+                  {%- assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+                  <div class="product-badge">-{{ discount }}%</div>
+                {%- endif -%}
+              </div>
+              
+              <div class="product-card-info">
+                <h3 class="product-card-title">
+                  <a href="{{ product.url }}">{{ product.title }}</a>
+                </h3>
+                
+                <div class="product-card-price">
+                  {%- if product.compare_at_price > product.price -%}
+                    <span class="product-price-compare">{{ product.compare_at_price | money }}</span>
+                  {%- endif -%}
+                  <span class="product-price">{{ product.price | money }}</span>
+                </div>
+                
+                <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="product-card-form">
+                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  <button type="submit" name="add" class="btn-add-to-cart{% unless product.available %} disabled{% endunless %}"
+                    {% unless product.available %} disabled="disabled"{% endunless %}>
+                    {%- if product.available -%}
+                      {{ 'products.product.add_to_cart' | t }}
+                    {%- else -%}
+                      {{ 'products.product.sold_out' | t }}
+                    {%- endif -%}
+                  </button>
+                </form>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+            <ul class="pagination-list">
+              {%- if paginate.previous -%}
+                <li class="pagination-item">
+                  <a href="{{ paginate.previous.url }}" class="pagination-link" aria-label="{{ 'general.pagination.previous' | t }}">
+                    ← {{ 'general.pagination.previous' | t }}
+                  </a>
+                </li>
+              {%- endif -%}
+
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}
+                  <li class="pagination-item">
+                    <a href="{{ part.url }}" class="pagination-link" aria-label="{{ 'general.pagination.page' | t: number: part.title }}">
+                      {{ part.title }}
+                    </a>
+                  </li>
+                {%- else -%}
+                  {%- if part.title == paginate.current_page -%}
+                    <li class="pagination-item">
+                      <span class="pagination-link pagination-link--current" aria-current="page" aria-label="{{ 'general.pagination.current_page' | t: number: part.title }}">
+                        {{ part.title }}
+                      </span>
+                    </li>
+                  {%- else -%}
+                    <li class="pagination-item">
+                      <span class="pagination-link pagination-link--gap">{{ part.title }}</span>
+                    </li>
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+
+              {%- if paginate.next -%}
+                <li class="pagination-item">
+                  <a href="{{ paginate.next.url }}" class="pagination-link" aria-label="{{ 'general.pagination.next' | t }}">
+                    {{ 'general.pagination.next' | t }} →
+                  </a>
+                </li>
+              {%- endif -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+
+{%- endpaginate -%}
+
+<script>
+  // Collection sorting
+  document.addEventListener('DOMContentLoaded', function() {
+    const sortSelect = document.getElementById('SortBy');
+    
+    if (sortSelect) {
+      sortSelect.addEventListener('change', function() {
+        const url = new URL(window.location.href);
+        url.searchParams.set('sort_by', this.value);
+        window.location.href = url.toString();
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Collection pages",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 24,
+      "step": 4,
+      "default": 16,
+      "label": "Products per page"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "Enable filtering",
+      "info": "Customize search and filtering with the Search & Discovery app."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "default": true,
+      "label": "Enable sorting"
+    }
+  ]
+}
+{% endschema %}
