@@ -1,0 +1,32 @@
+<!-- Navigation -->
+<nav class="product-nav">
+    <div class="container">
+        <a href="{{ section.settings.back_link_url | default: routes.root_url }}" class="back-link">
+            {{ section.settings.back_link_text | default: '← Retour à l\'accueil' }}
+        </a>
+    </div>
+</nav>
+
+{% schema %}
+{
+  "name": "Navigation Produit",
+  "settings": [
+    {
+      "type": "text",
+      "id": "back_link_text",
+      "label": "Texte du lien retour",
+      "default": "← Retour à l'accueil"
+    },
+    {
+      "type": "url",
+      "id": "back_link_url",
+      "label": "URL du lien retour"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Navigation Produit"
+    }
+  ]
+}
+{% endschema %}

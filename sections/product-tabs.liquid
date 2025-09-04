@@ -1,0 +1,278 @@
+<!-- Product Tabs -->
+<section class="product-tabs-section">
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('description')">{{ section.settings.tab_description_title | default: 'Description' }}</button>
+                <button class="tab-btn" onclick="showTab('reviews')">{{ section.settings.tab_reviews_title | default: 'Avis' }}</button>
+                <button class="tab-btn" onclick="showTab('shipping')">{{ section.settings.tab_shipping_title | default: 'Livraison' }}</button>
+            </div>
+
+            <div class="tab-content">
+                <!-- Description Tab -->
+                <div id="description" class="tab-pane active">
+                    <div class="tab-card">
+                        <h3 class="gradient-text">{{ section.settings.description_title | default: 'Description du produit' }}</h3>
+                        {% if section.settings.custom_description != blank %}
+                          {{ section.settings.custom_description }}
+                        {% else %}
+                          {{ product.description }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Reviews Tab -->
+                <div id="reviews" class="tab-pane">
+                    <div class="tab-card">
+                        <div class="reviews-header">
+                            <div class="rating-large">{{ section.settings.reviews_rating | default: '4.9/5' }}</div>
+                            <div class="stars-large">
+                                <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                            </div>
+                            <p>{{ section.settings.reviews_subtitle | default: 'Basé sur 127 avis' }}</p>
+                        </div>
+
+                        {%- if product.metafields.reviews.content != blank -%}
+                          {{ product.metafields.reviews.content }}
+                        {%- else -%}
+                          <div class="reviews-list">
+                              {% for block in section.blocks %}
+                                {% if block.type == 'review' %}
+                                  <div class="review-item" {{ block.shopify_attributes }}>
+                                      <div class="review-header">
+                                          <div class="reviewer">
+                                              <div class="reviewer-avatar">{{ block.settings.reviewer_avatar | default: '👩‍💼' }}</div>
+                                              <div>
+                                                  <div class="reviewer-name">{{ block.settings.reviewer_name | default: 'Client' }}</div>
+                                                  <div class="review-date">{{ block.settings.review_date | default: 'Il y a 2 jours' }}</div>
+                                              </div>
+                                          </div>
+                                          <div class="review-stars">
+                                              <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                          </div>
+                                      </div>
+                                      <p class="review-content">
+                                          {{ block.settings.review_content | default: 'Excellent produit, je le recommande !' }}
+                                      </p>
+                                  </div>
+                                {% endif %}
+                              {% endfor %}
+
+                              {% unless section.blocks.size > 0 %}
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <div class="reviewer">
+                                            <div class="reviewer-avatar">👩‍💼</div>
+                                            <div>
+                                                <div class="reviewer-name">Emma L.</div>
+                                                <div class="review-date">Il y a 2 jours</div>
+                                            </div>
+                                        </div>
+                                        <div class="review-stars">
+                                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                        </div>
+                                    </div>
+                                    <p class="review-content">
+                                        Géniale pour scroller sur TikTok sans lever le bras ! Design super discret et élégant. 
+                                        L'autonomie est vraiment impressionnante, je la charge une fois par semaine maximum.
+                                    </p>
+                                </div>
+                              {% endunless %}
+                          </div>
+                        {%- endif -%}
+                    </div>
+                </div>
+
+                <!-- Shipping Tab -->
+                <div id="shipping" class="tab-pane">
+                    <div class="tab-card">
+                        <h3 class="gradient-text">{{ section.settings.shipping_title | default: 'Livraison et retours' }}</h3>
+                        {%- if product.metafields.shipping.content != blank -%}
+                          {{ product.metafields.shipping.content }}
+                        {%- else -%}
+                          <div class="shipping-info">
+                              {% for block in section.blocks %}
+                                {% if block.type == 'shipping_item' %}
+                                  <div class="shipping-item" {{ block.shopify_attributes }}>
+                                      <div class="shipping-icon">{{ block.settings.shipping_icon | default: '🚚' }}</div>
+                                      <div>
+                                          <h4>{{ block.settings.shipping_item_title | default: 'Livraison' }}</h4>
+                                          <p>{{ block.settings.shipping_item_description | default: 'Description de la livraison' }}</p>
+                                      </div>
+                                  </div>
+                                {% endif %}
+                              {% endfor %}
+
+                              {% assign shipping_items = section.blocks | where: 'type', 'shipping_item' %}
+                              {% unless shipping_items.size > 0 %}
+                                <div class="shipping-item">
+                                    <div class="shipping-icon">🚚</div>
+                                    <div>
+                                        <h4>Livraison gratuite en France</h4>
+                                        <p>Expédition sous 24h ouvrées. Livraison en 2-3 jours ouvrés par Colissimo.</p>
+                                    </div>
+                                </div>
+                                <div class="shipping-item">
+                                    <div class="shipping-icon">🌍</div>
+                                    <div>
+                                        <h4>Livraison internationale</h4>
+                                        <p>Disponible dans toute l'Europe. Délais de 5-7 jours ouvrés.</p>
+                                    </div>
+                                </div>
+                                <div class="shipping-item">
+                                    <div class="shipping-icon">↩️</div>
+                                    <div>
+                                        <h4>Retours gratuits</h4>
+                                        <p>30 jours pour changer d'avis. Retour gratuit et remboursement intégral.</p>
+                                    </div>
+                                </div>
+                              {% endunless %}
+                          </div>
+                        {%- endif -%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+  // Tab functionality
+  function showTab(tabId) {
+    // Hide all tab panes
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.remove('active');
+    });
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab
+    const selectedTab = document.getElementById(tabId);
+    if (selectedTab) {
+        selectedTab.classList.add('active');
+    }
+    
+    // Add active class to clicked button
+    event.target.classList.add('active');
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Onglets Produit",
+  "settings": [
+    {
+      "type": "text",
+      "id": "tab_description_title",
+      "label": "Titre onglet Description",
+      "default": "Description"
+    },
+    {
+      "type": "text",
+      "id": "tab_reviews_title", 
+      "label": "Titre onglet Avis",
+      "default": "Avis"
+    },
+    {
+      "type": "text",
+      "id": "tab_shipping_title",
+      "label": "Titre onglet Livraison",
+      "default": "Livraison"
+    },
+    {
+      "type": "text",
+      "id": "description_title",
+      "label": "Titre description",
+      "default": "Description du produit"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_description",
+      "label": "Description personnalisée (optionnelle)"
+    },
+    {
+      "type": "text",
+      "id": "reviews_rating",
+      "label": "Note des avis",
+      "default": "4.9/5"
+    },
+    {
+      "type": "text",
+      "id": "reviews_subtitle",
+      "label": "Sous-titre des avis",
+      "default": "Basé sur 127 avis"
+    },
+    {
+      "type": "text",
+      "id": "shipping_title",
+      "label": "Titre livraison",
+      "default": "Livraison et retours"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Avis client",
+      "settings": [
+        {
+          "type": "text",
+          "id": "reviewer_name",
+          "label": "Nom du client",
+          "default": "Client"
+        },
+        {
+          "type": "text",
+          "id": "reviewer_avatar",
+          "label": "Avatar (emoji)",
+          "default": "👩‍💼"
+        },
+        {
+          "type": "text",
+          "id": "review_date",
+          "label": "Date de l'avis",
+          "default": "Il y a 2 jours"
+        },
+        {
+          "type": "textarea",
+          "id": "review_content",
+          "label": "Contenu de l'avis",
+          "default": "Excellent produit, je le recommande !"
+        }
+      ]
+    },
+    {
+      "type": "shipping_item",
+      "name": "Info livraison",
+      "settings": [
+        {
+          "type": "text",
+          "id": "shipping_icon",
+          "label": "Icône (emoji)",
+          "default": "🚚"
+        },
+        {
+          "type": "text",
+          "id": "shipping_item_title",
+          "label": "Titre",
+          "default": "Livraison"
+        },
+        {
+          "type": "textarea",
+          "id": "shipping_item_description",
+          "label": "Description",
+          "default": "Description de la livraison"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Onglets Produit"
+    }
+  ]
+}
+{% endschema %}

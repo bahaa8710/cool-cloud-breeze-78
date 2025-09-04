@@ -1,12 +1,5 @@
 {%- assign current_variant = product.selected_or_first_available_variant -%}
 
-<!-- Navigation -->
-<nav class="product-nav">
-    <div class="container">
-        <a href="{{ routes.root_url }}" class="back-link">← Retour à l'accueil</a>
-    </div>
-</nav>
-
 <!-- Product Section -->
 <section class="product-section">
     <div class="container">
@@ -21,7 +14,7 @@
                     <div class="product-badges">
                         <div class="badge">
                             <span class="badge-dot"></span>
-                            <span>Nouveau</span>
+                            <span>{{ section.settings.product_badge | default: 'Nouveau' }}</span>
                         </div>
                         {%- if current_variant.compare_at_price > current_variant.price -%}
                           {%- assign discount = current_variant.compare_at_price | minus: current_variant.price | times: 100 | divided_by: current_variant.compare_at_price -%}
@@ -64,7 +57,7 @@
                       <div class="stars">
                           <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
                       </div>
-                      <span class="rating-text">(4.9/5 - 127 avis)</span>
+                      <span class="rating-text">({{ section.settings.default_rating | default: '4.9/5 - 127 avis' }})</span>
                   </div>
                 {%- endif -%}
 
@@ -87,7 +80,7 @@
                             <circle cx="5.5" cy="18.5" r="2.5"/>
                             <circle cx="18.5" cy="18.5" r="2.5"/>
                         </svg>
-                        Livraison gratuite
+                        {{ section.settings.shipping_text | default: 'Livraison gratuite' }}
                     </div>
                 </div>
 
@@ -95,42 +88,47 @@
                     {{ product.description | truncatewords: 50 }}
                 </div>
 
-                <!-- Product Form avec variant-selects pour Shopify 2.0 -->
+                <!-- Product Form avec variant-selects pour Shopify 2.0 (sans sélecteur de couleur) -->
                 <variant-selects class="no-js-hidden" data-section="{{ section.id }}" data-url="{{ product.url }}">
                   {%- form 'product', product, id: 'AddToCartForm', class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
                     <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
 
-                    <!-- Options de variantes -->
+                    <!-- Options de variantes (sans couleur) -->
                     <div class="product-options">
                         {%- unless product.has_only_default_variant -%}
                           {%- for option in product.options_with_values -%}
-                            <div class="product-form__input product-form__input--dropdown">
-                              <label class="form__label" for="Option-{{ option.position }}">
-                                {{ option.name }}
-                              </label>
-                              <div class="select">
-                                <select name="options[{{ option.name | escape }}]" 
-                                        id="Option-{{ option.position }}" 
-                                        class="select__select">
-                                  {%- for value in option.values -%}
-                                    <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>
-                                      {{ value }}
-                                    </option>
-                                  {%- endfor -%}
-                                </select>
+                            {%- assign option_name_lower = option.name | downcase -%}
+                            {%- unless option_name_lower contains 'color' or option_name_lower contains 'couleur' -%}
+                              <div class="product-form__input product-form__input--dropdown">
+                                <label class="form__label" for="Option-{{ option.position }}">
+                                  {{ option.name }}
+                                </label>
+                                <div class="select">
+                                  <select name="options[{{ option.name | escape }}]" 
+                                          id="Option-{{ option.position }}" 
+                                          class="select__select">
+                                    {%- for value in option.values -%}
+                                      <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>
+                                        {{ value }}
+                                      </option>
+                                    {%- endfor -%}
+                                  </select>
+                                </div>
                               </div>
-                            </div>
+                            {%- endunless -%}
                           {%- endfor -%}
                         {%- endunless -%}
 
-                        <div class="quantity-option">
-                            <label class="form__label" for="Quantity-{{ section.id }}">Quantité :</label>
-                            <div class="quantity-controls">
-                                <button class="qty-btn" type="button" onclick="changeQuantity(-1, '{{ section.id }}')">-</button>
-                                <input type="number" name="quantity" id="Quantity-{{ section.id }}" min="1" max="10" value="1" class="quantity__input">
-                                <button class="qty-btn" type="button" onclick="changeQuantity(1, '{{ section.id }}')">+</button>
-                            </div>
-                        </div>
+                        {%- if section.settings.show_quantity_selector != false -%}
+                          <div class="quantity-option">
+                              <label class="form__label" for="Quantity-{{ section.id }}">{{ section.settings.quantity_label | default: 'Quantité :' }}</label>
+                              <div class="quantity-controls">
+                                  <button class="qty-btn" type="button" onclick="changeQuantity(-1, '{{ section.id }}')">-</button>
+                                  <input type="number" name="quantity" id="Quantity-{{ section.id }}" min="1" max="10" value="1" class="quantity__input">
+                                  <button class="qty-btn" type="button" onclick="changeQuantity(1, '{{ section.id }}')">+</button>
+                              </div>
+                          </div>
+                        {%- endif -%}
                     </div>
 
                     <!-- Bouton Ajouter au panier -->
@@ -163,110 +161,14 @@
                     <button type="submit" name="add" class="btn-buy btn-add-to-cart">
                       <span>
                         {%- if current_variant.available -%}
-                          Acheter maintenant
+                          {{ section.settings.add_to_cart_text | default: 'Acheter maintenant' }}
                         {%- else -%}
-                          Rupture de stock
+                          {{ section.settings.sold_out_text | default: 'Rupture de stock' }}
                         {%- endif -%}
                       </span>
                     </button>
                   {%- endform -%}
                 </noscript>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Product Tabs -->
-<section class="product-tabs-section">
-    <div class="container">
-        <!-- Tabs -->
-        <div class="tabs">
-            <div class="tab-buttons">
-                <button class="tab-btn active" onclick="showTab('description')">Description</button>
-                <button class="tab-btn" onclick="showTab('reviews')">Avis</button>
-                <button class="tab-btn" onclick="showTab('shipping')">Livraison</button>
-            </div>
-
-            <div class="tab-content">
-                <!-- Description Tab -->
-                <div id="description" class="tab-pane active">
-                    <div class="tab-card">
-                        <h3 class="gradient-text">Description du produit</h3>
-                        {{ product.description }}
-                    </div>
-                </div>
-
-                <!-- Reviews Tab -->
-                <div id="reviews" class="tab-pane">
-                    <div class="tab-card">
-                        <div class="reviews-header">
-                            <div class="rating-large">4.9/5</div>
-                            <div class="stars-large">
-                                <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
-                            </div>
-                            <p>Basé sur 127 avis</p>
-                        </div>
-
-                        {%- if product.metafields.reviews.content != blank -%}
-                          {{ product.metafields.reviews.content }}
-                        {%- else -%}
-                          <div class="reviews-list">
-                              <div class="review-item">
-                                  <div class="review-header">
-                                      <div class="reviewer">
-                                          <div class="reviewer-avatar">👩‍💼</div>
-                                          <div>
-                                              <div class="reviewer-name">Emma L.</div>
-                                              <div class="review-date">Il y a 2 jours</div>
-                                          </div>
-                                      </div>
-                                      <div class="review-stars">
-                                          <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
-                                      </div>
-                                  </div>
-                                  <p class="review-content">
-                                      Géniale pour scroller sur TikTok sans lever le bras ! Design super discret et élégant. 
-                                      L'autonomie est vraiment impressionnante, je la charge une fois par semaine maximum.
-                                  </p>
-                              </div>
-                          </div>
-                        {%- endif -%}
-                    </div>
-                </div>
-
-                <!-- Shipping Tab -->
-                <div id="shipping" class="tab-pane">
-                    <div class="tab-card">
-                        <h3 class="gradient-text">Livraison et retours</h3>
-                        {%- if product.metafields.shipping.content != blank -%}
-                          {{ product.metafields.shipping.content }}
-                        {%- else -%}
-                          <div class="shipping-info">
-                              <div class="shipping-item">
-                                  <div class="shipping-icon">🚚</div>
-                                  <div>
-                                      <h4>Livraison gratuite en France</h4>
-                                      <p>Expédition sous 24h ouvrées. Livraison en 2-3 jours ouvrés par Colissimo.</p>
-                                  </div>
-                              </div>
-                              <div class="shipping-item">
-                                  <div class="shipping-icon">🌍</div>
-                                  <div>
-                                      <h4>Livraison internationale</h4>
-                                      <p>Disponible dans toute l'Europe. Délais de 5-7 jours ouvrés.</p>
-                                  </div>
-                              </div>
-                              <div class="shipping-item">
-                                  <div class="shipping-icon">↩️</div>
-                                  <div>
-                                      <h4>Retours gratuits</h4>
-                                      <p>30 jours pour changer d'avis. Retour gratuit et remboursement intégral.</p>
-                                  </div>
-                              </div>
-                          </div>
-                        {%- endif -%}
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -311,28 +213,6 @@
             buyNowQuantity.value = newQuantity;
         }
     }
-  }
-
-  // Tab functionality
-  function showTab(tabId) {
-    // Hide all tab panes
-    document.querySelectorAll('.tab-pane').forEach(pane => {
-        pane.classList.remove('active');
-    });
-    
-    // Remove active class from all buttons
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Show selected tab
-    const selectedTab = document.getElementById(tabId);
-    if (selectedTab) {
-        selectedTab.classList.add('active');
-    }
-    
-    // Add active class to clicked button
-    event.target.classList.add('active');
   }
 
   // Variant selector compatible avec Shopify 2.0
@@ -488,10 +368,26 @@
 
 {% schema %}
 {
-  "name": "Product Template",
-  "tag": "section",
-  "class": "section",
+  "name": "Produit Principal",
   "settings": [
+    {
+      "type": "text",
+      "id": "product_badge",
+      "label": "Badge produit",
+      "default": "Nouveau"
+    },
+    {
+      "type": "text",
+      "id": "default_rating",
+      "label": "Note par défaut",
+      "default": "4.9/5 - 127 avis"
+    },
+    {
+      "type": "text",
+      "id": "shipping_text",
+      "label": "Texte livraison",
+      "default": "Livraison gratuite"
+    },
     {
       "type": "checkbox",
       "id": "show_dynamic_checkout",
@@ -506,6 +402,12 @@
     },
     {
       "type": "text",
+      "id": "quantity_label",
+      "default": "Quantité :",
+      "label": "Label quantité"
+    },
+    {
+      "type": "text",
       "id": "add_to_cart_text",
       "default": "Ajouter au panier",
       "label": "Texte du bouton Ajouter au panier"
@@ -517,18 +419,9 @@
       "label": "Texte rupture de stock"
     }
   ],
-  "blocks": [
+  "presets": [
     {
-      "type": "text",
-      "name": "Bloc de texte",
-      "settings": [
-        {
-          "type": "text",
-          "id": "text",
-          "default": "Bloc de texte",
-          "label": "Texte"
-        }
-      ]
+      "name": "Produit Principal"
     }
   ]
 }
