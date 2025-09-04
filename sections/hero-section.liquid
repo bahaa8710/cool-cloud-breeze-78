@@ -1,0 +1,160 @@
+<!-- Hero Section -->
+<section id="hero" class="hero-section">
+    <!-- Nuages flottants -->
+    <div class="clouds-container">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+    </div>
+
+    <div class="container">
+        <div class="hero-content">
+            <!-- Badge Innovation -->
+            <div class="badge">
+                <span class="badge-dot"></span>
+                <span>{{ section.settings.hero_badge | default: 'Innovation technologique ⚡' }}</span>
+            </div>
+
+            <!-- Titre principal -->
+            <h1 class="hero-title">
+                <span class="gradient-text">{{ section.settings.hero_title_highlight | default: 'Contrôle tout' }}</span>
+                <br>
+                <span>{{ section.settings.hero_title_normal | default: "d'un simple geste !" }}</span>
+            </h1>
+
+            <!-- Sous-titre -->
+            <p class="hero-subtitle">
+                {{ section.settings.hero_subtitle | default: 'La bague connectée qui révolutionne ton quotidien digital. Swipe, contrôle et capture sans jamais toucher ton écran 💍' }}
+            </p>
+
+            <!-- Image produit -->
+            <div class="hero-image">
+                {%- if section.settings.hero_image != blank -%}
+                  <img src="{{ section.settings.hero_image | img_url: '400x' }}" 
+                       alt="{{ section.settings.hero_image.alt | default: 'Zen Ring - Bague connectée Bluetooth' }}" 
+                       class="product-image">
+                {%- else -%}
+                  <img src="{{ 'hero-product.jpg' | asset_url }}" 
+                       alt="Zen Ring - Bague connectée Bluetooth" 
+                       class="product-image">
+                {%- endif -%}
+                <div class="image-shine"></div>
+            </div>
+
+            <!-- Prix et CTA -->
+            <div class="hero-cta">
+                <div class="price-container">
+                    <div class="price">
+                        {%- if collections.all.products.first -%}
+                          {%- assign product = collections.all.products.first -%}
+                          <span class="old-price">{{ product.compare_at_price | money }}</span>
+                          {{ product.price | money }}
+                        {%- else -%}
+                          <span class="old-price">29€</span>
+                          19€
+                        {%- endif -%}
+                    </div>
+                    <div class="shipping">{{ section.settings.shipping_text | default: 'Livraison gratuite 🚚' }}</div>
+                </div>
+                
+                <a href="{{ section.settings.hero_button_url | default: routes.collections_url }}" class="btn-primary">
+                    {{ section.settings.cta_text | default: 'Je veux ma Zen Ring ⚡' }}
+                    <span class="btn-arrow">→</span>
+                </a>
+            </div>
+
+            <!-- Garanties -->
+            <div class="guarantees">
+                <div class="guarantee-item">
+                    <span class="check">✓</span>
+                    {{ section.settings.guarantee_1 | default: 'Garantie 30 jours' }}
+                </div>
+                <div class="guarantee-item">
+                    <span class="check">✓</span>
+                    {{ section.settings.guarantee_2 | default: 'Paiement sécurisé' }}
+                </div>
+                <div class="guarantee-item">
+                    <span class="check">✓</span>
+                    {{ section.settings.guarantee_3 | default: 'Stock limité' }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% schema %}
+{
+  "name": "Section Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "hero_badge",
+      "label": "Badge texte",
+      "default": "Innovation technologique ⚡"
+    },
+    {
+      "type": "text",
+      "id": "hero_title_highlight",
+      "label": "Titre principal (partie en couleur)",
+      "default": "Contrôle tout"
+    },
+    {
+      "type": "text",
+      "id": "hero_title_normal",
+      "label": "Titre principal (suite)",
+      "default": "d'un simple geste !"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_subtitle",
+      "label": "Sous-titre",
+      "default": "La bague connectée qui révolutionne ton quotidien digital. Swipe, contrôle et capture sans jamais toucher ton écran 💍"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Image produit hero"
+    },
+    {
+      "type": "text",
+      "id": "shipping_text",
+      "label": "Texte livraison",
+      "default": "Livraison gratuite 🚚"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Texte bouton CTA",
+      "default": "Je veux ma Zen Ring ⚡"
+    },
+    {
+      "type": "url",
+      "id": "hero_button_url",
+      "label": "Lien bouton Hero"
+    },
+    {
+      "type": "text",
+      "id": "guarantee_1",
+      "label": "Garantie 1",
+      "default": "Garantie 30 jours"
+    },
+    {
+      "type": "text",
+      "id": "guarantee_2",
+      "label": "Garantie 2",
+      "default": "Paiement sécurisé"
+    },
+    {
+      "type": "text",
+      "id": "guarantee_3",
+      "label": "Garantie 3",
+      "default": "Stock limité"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Section Hero"
+    }
+  ]
+}
+{% endschema %}

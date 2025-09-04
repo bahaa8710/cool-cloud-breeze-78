@@ -1,0 +1,155 @@
+<!-- CTA Section -->
+<section id="cta" class="cta-section">
+    <div class="cta-bg">
+        <div class="cta-cloud-1"></div>
+        <div class="cta-cloud-2"></div>
+    </div>
+
+    <div class="container">
+        <!-- Badge urgence -->
+        <div class="urgency-badge">
+            <span class="urgency-dot"></span>
+            <span>{{ section.settings.urgency_text | default: '🔥 Stock limité - Plus que quelques pièces' }}</span>
+        </div>
+
+        <!-- Titre principal -->
+        <h2 class="cta-title">
+            Prêt à contrôler ton <span class="gradient-text">monde</span> ?
+        </h2>
+
+        <p class="cta-subtitle">
+            {{ section.settings.cta_subtitle | default: 'Rejoins la révolution de la technologie portable. Ton quotidien ne sera plus jamais le même ⚡' }}
+        </p>
+
+        <!-- Offre spéciale -->
+        <div class="offer-card">
+            <div class="offer-header">
+                <div class="offer-label">{{ section.settings.offer_label | default: 'Prix de lancement ✨' }}</div>
+                <div class="offer-price">
+                    {%- if collections.all.products.first -%}
+                      {%- assign product = collections.all.products.first -%}
+                      <span class="old-price">{{ product.compare_at_price | money }}</span>
+                      <span class="new-price">{{ product.price | money }}</span>
+                      {%- assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+                      <span class="discount-badge">-{{ discount }}%</span>
+                    {%- else -%}
+                      <span class="old-price">29€</span>
+                      <span class="new-price">19€</span>
+                      <span class="discount-badge">-34%</span>
+                    {%- endif -%}
+                </div>
+                <div class="shipping-info">{{ section.settings.shipping_info | default: '+ Livraison gratuite en France 🚚' }}</div>
+            </div>
+
+            <a href="{{ section.settings.cta_button_url | default: routes.collections_url }}" class="btn-primary btn-large">
+                {{ section.settings.final_cta_text | default: 'Je veux ma Zen Ring ⚡' }}
+                <span class="btn-emoji">💍</span>
+            </a>
+
+            <div class="security-info">{{ section.settings.security_info | default: 'Paiement 100% sécurisé • Garantie satisfait ou remboursé 15 jours' }}</div>
+        </div>
+
+        <!-- Countdown timer -->
+        <div class="countdown">
+            <div class="countdown-title">{{ section.settings.countdown_title | default: '⏰ Offre limitée dans le temps !' }}</div>
+            <div id="countdown-timer" class="countdown-timer">23:45:12</div>
+            <div class="countdown-labels">Heures • Minutes • Secondes</div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Countdown timer functionality
+document.addEventListener('DOMContentLoaded', function() {
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
+        
+        const timeLeft = tomorrow.getTime() - now;
+        
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        
+        const timerElement = document.getElementById('countdown-timer');
+        if (timerElement) {
+            timerElement.innerHTML = 
+                String(hours).padStart(2, '0') + ':' + 
+                String(minutes).padStart(2, '0') + ':' + 
+                String(seconds).padStart(2, '0');
+        }
+        
+        if (timeLeft < 0) {
+            if (timerElement) {
+                timerElement.innerHTML = '00:00:00';
+            }
+        }
+    }
+    
+    // Update immediately and then every second
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+});
+</script>
+
+{% schema %}
+{
+  "name": "Section CTA",
+  "settings": [
+    {
+      "type": "text",
+      "id": "urgency_text",
+      "label": "Texte d'urgence",
+      "default": "🔥 Stock limité - Plus que quelques pièces"
+    },
+    {
+      "type": "textarea",
+      "id": "cta_subtitle",
+      "label": "Sous-titre CTA",
+      "default": "Rejoins la révolution de la technologie portable. Ton quotidien ne sera plus jamais le même ⚡"
+    },
+    {
+      "type": "text",
+      "id": "offer_label",
+      "label": "Label offre",
+      "default": "Prix de lancement ✨"
+    },
+    {
+      "type": "text",
+      "id": "shipping_info",
+      "label": "Info livraison",
+      "default": "+ Livraison gratuite en France 🚚"
+    },
+    {
+      "type": "text",
+      "id": "final_cta_text",
+      "label": "Texte CTA final",
+      "default": "Je veux ma Zen Ring ⚡"
+    },
+    {
+      "type": "url",
+      "id": "cta_button_url",
+      "label": "Lien bouton CTA final"
+    },
+    {
+      "type": "text",
+      "id": "security_info",
+      "label": "Info sécurité",
+      "default": "Paiement 100% sécurisé • Garantie satisfait ou remboursé 15 jours"
+    },
+    {
+      "type": "text",
+      "id": "countdown_title",
+      "label": "Titre countdown",
+      "default": "⏰ Offre limitée dans le temps !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Section CTA"
+    }
+  ]
+}
+{% endschema %}

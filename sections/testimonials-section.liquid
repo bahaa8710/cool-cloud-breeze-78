@@ -1,0 +1,186 @@
+<!-- Testimonials Section -->
+<section id="testimonials" class="testimonials-section">
+    <div class="testimonials-bg">
+        <div class="testimonial-cloud-1"></div>
+        <div class="testimonial-cloud-2"></div>
+    </div>
+
+    <div class="container">
+        <div class="section-header">
+            <h2>Ils ont testé, ils <span class="gradient-text">approuvent</span> !</h2>
+            <p>{{ section.settings.testimonials_subtitle | default: 'Rejoins les milliers de personnes qui ont adopté leur nouvelle bague connectée' }}</p>
+        </div>
+
+        <div class="testimonials-grid">
+            {% for block in section.blocks %}
+              {% if block.type == 'testimonial' %}
+                <div class="testimonial-card" {{ block.shopify_attributes }}>
+                    <div class="stars">
+                        <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                    </div>
+                    <p class="testimonial-text">
+                        {{ block.settings.text | default: 'Témoignage client' }}
+                    </p>
+                    <div class="testimonial-author">
+                        {% if block.settings.avatar != blank %}
+                          <img src="{{ block.settings.avatar | img_url: '150x150' }}" alt="{{ block.settings.name }}">
+                        {% else %}
+                          {% case forloop.index %}
+                            {% when 1 %}
+                              <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?auto=format&fit=crop&w=150&q=80" alt="{{ block.settings.name }}">
+                            {% when 2 %}
+                              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="{{ block.settings.name }}">
+                            {% when 3 %}
+                              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80" alt="{{ block.settings.name }}">
+                            {% else %}
+                              <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?auto=format&fit=crop&w=150&q=80" alt="{{ block.settings.name }}">
+                          {% endcase %}
+                        {% endif %}
+                        <div>
+                            <div class="author-name">{{ block.settings.name | default: 'Client' }}</div>
+                            <div class="author-location">{{ block.settings.location | default: 'France' }}</div>
+                        </div>
+                    </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+
+            <!-- Default testimonials if no blocks -->
+            {% assign testimonials = section.blocks | where: 'type', 'testimonial' %}
+            {% unless testimonials.size > 0 %}
+              <div class="testimonial-card">
+                  <div class="stars">
+                      <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                  </div>
+                  <p class="testimonial-text">
+                      "Géniale pour scroller sur TikTok sans lever le bras ! Design super discret 💍"
+                  </p>
+                  <div class="testimonial-author">
+                      <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?auto=format&fit=crop&w=150&q=80" alt="Emma L.">
+                      <div>
+                          <div class="author-name">Emma L.</div>
+                          <div class="author-location">Paris</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="testimonial-card">
+                  <div class="stars">
+                      <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                  </div>
+                  <p class="testimonial-text">
+                      "Perfect pour mes photos Instagram ! Plus besoin de minuteur, je contrôle tout avec ma bague ⚡"
+                  </p>
+                  <div class="testimonial-author">
+                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="Lucas M.">
+                      <div>
+                          <div class="author-name">Lucas M.</div>
+                          <div class="author-location">Lyon</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="testimonial-card">
+                  <div class="stars">
+                      <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                  </div>
+                  <p class="testimonial-text">
+                      "Révolutionnaire ! Je contrôle ma musique pendant le sport, mes collègues sont jaloux 🎶"
+                  </p>
+                  <div class="testimonial-author">
+                      <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80" alt="Sarah K.">
+                      <div>
+                          <div class="author-name">Sarah K.</div>
+                          <div class="author-location">Marseille</div>
+                      </div>
+                  </div>
+              </div>
+            {% endunless %}
+        </div>
+
+        <!-- Stats sociaux -->
+        <div class="social-stats">
+            <div class="stat">
+                <span class="stat-emoji">🔥</span>
+                <span><strong>{{ section.settings.stat_fans | default: '+5000' }}</strong> fans satisfaits</span>
+            </div>
+            <div class="stat">
+                <span class="stat-emoji">⭐</span>
+                <span><strong>{{ section.settings.stat_rating | default: '4.9/5' }}</strong> note moyenne</span>
+            </div>
+        </div>
+
+        <!-- Compatibilité -->
+        <div class="compatibility">
+            <div class="compatibility-badge">
+                <span>{{ section.settings.compatibility_text | default: '📱 Compatible TikTok, Instagram & YouTube' }}</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% schema %}
+{
+  "name": "Section Témoignages",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "testimonials_subtitle",
+      "label": "Sous-titre des témoignages",
+      "default": "Rejoins les milliers de personnes qui ont adopté leur nouvelle bague connectée"
+    },
+    {
+      "type": "text",
+      "id": "stat_fans",
+      "label": "Statistique fans",
+      "default": "+5000"
+    },
+    {
+      "type": "text",
+      "id": "stat_rating",
+      "label": "Note moyenne",
+      "default": "4.9/5"
+    },
+    {
+      "type": "text",
+      "id": "compatibility_text",
+      "label": "Texte compatibilité",
+      "default": "📱 Compatible TikTok, Instagram & YouTube"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Témoignage",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Texte du témoignage",
+          "default": "Géniale pour scroller sur TikTok sans lever le bras ! Design super discret 💍"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Nom",
+          "default": "Emma L."
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Localisation",
+          "default": "Paris"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Avatar"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Section Témoignages"
+    }
+  ]
+}
+{% endschema %}

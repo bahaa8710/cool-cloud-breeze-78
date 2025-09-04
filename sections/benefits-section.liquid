@@ -1,0 +1,223 @@
+<!-- Benefits Section -->
+<section id="benefits" class="benefits-section">
+    <div class="clouds-bg">
+        <div class="cloud-bg cloud-bg-1"></div>
+        <div class="cloud-bg cloud-bg-2"></div>
+    </div>
+
+    <div class="container">
+        <div class="section-header">
+            <h2>Pourquoi tu vas <span class="gradient-text">l'adorer</span> ?</h2>
+            <p>{{ section.settings.benefits_subtitle | default: 'Une bague connectée révolutionnaire qui transforme ton quotidien numérique' }}</p>
+        </div>
+
+        <!-- Bénéfices principaux -->
+        <div class="benefits-grid">
+            {% for block in section.blocks %}
+              {% if block.type == 'benefit' %}
+                <div class="benefit-card" {{ block.shopify_attributes }}>
+                    <div class="benefit-icon benefit-icon-{{ forloop.index }}">
+                        {% if block.settings.icon_svg != blank %}
+                          {{ block.settings.icon_svg }}
+                        {% else %}
+                          {% case forloop.index %}
+                            {% when 1 %}
+                              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                                  <line x1="12" y1="18" x2="12.01" y2="18"/>
+                              </svg>
+                            {% when 2 %}
+                              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <rect x="4" y="7" width="3" height="10" rx="1"/>
+                                  <rect x="8.5" y="4" width="3" height="16" rx="1"/>
+                                  <rect x="13" y="6" width="3" height="12" rx="1"/>
+                                  <rect x="17.5" y="3" width="3" height="18" rx="1"/>
+                              </svg>
+                            {% when 3 %}
+                              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                                  <circle cx="12" cy="13" r="3"/>
+                              </svg>
+                          {% endcase %}
+                        {% endif %}
+                    </div>
+                    <h3>{{ block.settings.title | default: 'Bénéfice' }}</h3>
+                    <p>{{ block.settings.description | default: 'Description du bénéfice' }}</p>
+                </div>
+              {% endif %}
+            {% endfor %}
+
+            <!-- Default benefits if no blocks -->
+            {% unless section.blocks.size > 0 %}
+              <div class="benefit-card">
+                  <div class="benefit-icon benefit-icon-1">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                          <line x1="12" y1="18" x2="12.01" y2="18"/>
+                      </svg>
+                  </div>
+                  <h3>Contrôle total</h3>
+                  <p>Swipe TikTok, Instagram, YouTube sans toucher ton écran</p>
+              </div>
+              <div class="benefit-card">
+                  <div class="benefit-icon benefit-icon-2">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <rect x="4" y="7" width="3" height="10" rx="1"/>
+                          <rect x="8.5" y="4" width="3" height="16" rx="1"/>
+                          <rect x="13" y="6" width="3" height="12" rx="1"/>
+                          <rect x="17.5" y="3" width="3" height="18" rx="1"/>
+                      </svg>
+                  </div>
+                  <h3>72h d'autonomie</h3>
+                  <p>3 jours d'utilisation avec le boîtier de recharge inclus</p>
+              </div>
+              <div class="benefit-card">
+                  <div class="benefit-icon benefit-icon-3">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                          <circle cx="12" cy="13" r="3"/>
+                      </svg>
+                  </div>
+                  <h3>Selfies parfaits</h3>
+                  <p>Déclenche tes photos et vidéos à distance, fini les selfies ratés</p>
+              </div>
+            {% endunless %}
+        </div>
+
+        <!-- Bénéfices secondaires -->
+        <div class="secondary-benefits">
+            {% for block in section.blocks %}
+              {% if block.type == 'secondary_benefit' %}
+                <div class="secondary-benefit" {{ block.shopify_attributes }}>
+                    <div class="emoji">{{ block.settings.emoji | default: '💍' }}</div>
+                    <div>
+                        <h4>{{ block.settings.title | default: 'Bénéfice secondaire' }}</h4>
+                        <p>{{ block.settings.description | default: 'Description du bénéfice secondaire' }}</p>
+                    </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+
+            <!-- Default secondary benefits if no blocks -->
+            {% assign secondary_benefits = section.blocks | where: 'type', 'secondary_benefit' %}
+            {% unless secondary_benefits.size > 0 %}
+              <div class="secondary-benefit">
+                  <div class="emoji">💍</div>
+                  <div>
+                      <h4>Design minimaliste</h4>
+                      <p>Discret et moderne, personne ne remarquera que tu la portes</p>
+                  </div>
+              </div>
+              <div class="secondary-benefit">
+                  <div class="emoji">📱</div>
+                  <div>
+                      <h4>Compatible iOS & Android</h4>
+                      <p>Fonctionne avec tous les smartphones modernes</p>
+                  </div>
+              </div>
+            {% endunless %}
+        </div>
+
+        <!-- Parfait pour -->
+        <div class="perfect-for">
+            <h3>Parfait pour :</h3>
+            <div class="tags">
+                {% for block in section.blocks %}
+                  {% if block.type == 'tag' %}
+                    <span class="tag" {{ block.shopify_attributes }}>{{ block.settings.text | default: '📱 Tag' }}</span>
+                  {% endif %}
+                {% endfor %}
+
+                <!-- Default tags if no blocks -->
+                {% assign tags = section.blocks | where: 'type', 'tag' %}
+                {% unless tags.size > 0 %}
+                  <span class="tag">📱 Réseaux sociaux</span>
+                  <span class="tag">🎶 Contrôle musique</span>
+                  <span class="tag">📸 Selfies & photos</span>
+                  <span class="tag">📖 Lecture e-books</span>
+                  <span class="tag">🎮 Gaming mobile</span>
+                {% endunless %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% schema %}
+{
+  "name": "Section Bénéfices",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "benefits_subtitle",
+      "label": "Sous-titre des bénéfices",
+      "default": "Une bague connectée révolutionnaire qui transforme ton quotidien numérique"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Bénéfice",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Contrôle total"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Swipe TikTok, Instagram, YouTube sans toucher ton écran"
+        },
+        {
+          "type": "textarea",
+          "id": "icon_svg",
+          "label": "Icône SVG"
+        }
+      ]
+    },
+    {
+      "type": "secondary_benefit",
+      "name": "Bénéfice secondaire",
+      "settings": [
+        {
+          "type": "text",
+          "id": "emoji",
+          "label": "Emoji",
+          "default": "💍"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Design minimaliste"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Discret et moderne, personne ne remarquera que tu la portes"
+        }
+      ]
+    },
+    {
+      "type": "tag",
+      "name": "Tag",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte",
+          "default": "📱 Réseaux sociaux"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Section Bénéfices"
+    }
+  ]
+}
+{% endschema %}
