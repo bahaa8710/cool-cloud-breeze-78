@@ -1,5 +1,6 @@
 {%- liquid
   assign product_form_id = 'product-form-' | append: section.id
+  assign option_name_lower = option.name | downcase
 -%}
 
 {%- for value in option.values -%}
@@ -30,12 +31,34 @@
     value="{{ value | escape }}"
     form="{{ product_form_id }}"
     {% if option.selected_value == value %}checked{% endif %}
-    {% if option_disabled %}class="disabled"{% endif %}
+    {% if option_disabled %}disabled{% endif %}
+    class="variant-input"
   >
-  <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
-    {{ value }}
-    {%- if option_disabled -%}
-      <span class="visually-hidden">({{ 'products.product.variant_sold_out_or_unavailable' | t }})</span>
-    {%- endif -%}
-  </label>
+  
+  {%- if option_name_lower contains 'color' or option_name_lower contains 'couleur' -%}
+    {%- comment %} Design cercle coloré pour les couleurs {%- endcomment -%}
+    <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}" class="color-swatch">
+      <span class="color-swatch__color" 
+            style="background-color: {% case value | downcase %}
+              {% when 'blue', 'bleu' %}#4285f4
+              {% when 'pink', 'rose' %}#ea4c89
+              {% when 'white', 'blanc' %}#ffffff
+              {% when 'black', 'noir' %}#333333
+              {% else %}{{ value | downcase }}
+            {% endcase %};">
+      </span>
+      <span class="visually-hidden">{{ value }}</span>
+      {%- if option_disabled -%}
+        <span class="visually-hidden">({{ 'products.product.variant_sold_out_or_unavailable' | t }})</span>
+      {%- endif -%}
+    </label>
+  {%- else -%}
+    {%- comment %} Design bouton standard pour les autres options {%- endcomment -%}
+    <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}" class="variant-button">
+      {{ value }}
+      {%- if option_disabled -%}
+        <span class="visually-hidden">({{ 'products.product.variant_sold_out_or_unavailable' | t }})</span>
+      {%- endif -%}
+    </label>
+  {%- endif -%}
 {%- endfor -%}
