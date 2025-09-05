@@ -92,7 +92,12 @@
                 <product-form class="product-form" data-section-id="{{ section.id }}">
                   {%- form 'product', product, id: 'product-form-{{ section.id }}', class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
                     <!-- ID de la variante sélectionnée -->
-                    <input type="hidden" name="id" value="{{ current_variant.id }}" class="product-variant-id" disabled>
+                    <input type="hidden" name="id" value="{{ current_variant.id }}" class="product-variant-id">
+                    
+                    <!-- Script avec données produit pour JavaScript -->
+                    <script type="application/json" data-product-json>
+                      {{ product | json }}
+                    </script>
 
                     <!-- Sélecteur de variantes avec wrapper variant-selects -->
                     {% unless product.has_only_default_variant %}
@@ -207,7 +212,9 @@
                   {%- endform -%}
                 </noscript>
 
-<!-- Chargement du script Buy Now -->
+<!-- Chargement des scripts et styles -->
+{{ 'component-product-form.css' | asset_url | stylesheet_tag }}
+{{ 'product-form.js' | asset_url | script_tag }}
 {{ 'product-buy-now.js' | asset_url | script_tag }}
             </div>
         </div>

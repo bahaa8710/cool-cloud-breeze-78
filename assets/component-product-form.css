@@ -1,0 +1,170 @@
+/* Sélecteur de couleurs */
+.color-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.color-input-wrapper {
+  position: relative;
+}
+
+.color-input-wrapper input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.color-swatch {
+  display: block;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #e5e5e5;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.color-swatch:hover {
+  transform: scale(1.05);
+  border-color: #121212;
+}
+
+.color-input-wrapper input[type="radio"]:checked + .color-swatch {
+  border-color: #121212;
+  box-shadow: 0 0 0 2px rgba(18, 18, 18, 0.1);
+  transform: scale(1.1);
+}
+
+.color-input-wrapper input[type="radio"]:focus + .color-swatch {
+  outline: 2px solid #121212;
+  outline-offset: 2px;
+}
+
+/* Couleurs spécifiques */
+.color-blue { background-color: #0066ff; }
+.color-pink { background-color: #ffb3d1; }
+.color-white { 
+  background-color: #ffffff; 
+  border-color: #d1d5db;
+}
+.color-black { background-color: #000000; }
+
+/* États des boutons */
+.product-form__cart-submit {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-form__cart-submit.loading {
+  color: transparent;
+}
+
+.loading__spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+}
+
+.loading__spinner svg {
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.sold-out-message {
+  display: none;
+}
+
+.sold-out-message:not(.hidden) {
+  display: inline;
+}
+
+/* Messages d'erreur */
+.product-form__error-message-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
+  color: #dc2626;
+  margin-top: 16px;
+}
+
+.product-form__error-message-wrapper[hidden] {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 749px) {
+  .color-selector {
+    justify-content: center;
+  }
+  
+  .color-swatch {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Fix pour le CSS visible et autres problèmes */
+#more-payment-options-link {
+  cursor: pointer !important;
+  display: none;
+}
+
+/* Fix pour les boutons de paiement dynamique */
+.shopify-payment-button {
+  margin-top: 1rem;
+}
+
+.shopify-payment-button__button {
+  border-radius: 12px !important;
+}
+
+/* Fix pour les textes techniques visibles */
+.product-form__tax-line {
+  font-size: 14px;
+  color: #666;
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+/* Masquer les éléments CSS qui s'affichent */
+style {
+  display: none !important;
+}
+
+/* Amélioration visuelle des sélecteurs */
+fieldset.js {
+  border: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+fieldset.js legend {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+/* S'assurer que les couleurs prédéfinies fonctionnent */
+.color-swatch .color-swatch__color {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
+}
