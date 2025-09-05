@@ -1,0 +1,62 @@
+{% comment %}
+  Renders product thumbnail
+  
+  Accepts:
+  - media: {Object} Media object
+  - media_aspect_ratio: {String} Size of the product image
+  - media_width: {Number} The width of the media element
+  - lazy_load: {Boolean} Image should be lazy loaded. Default: true
+  - show_image_outline: {Boolean} Show card outline. Default: true
+  - image_ratio: {String} The ratio of the media element
+  - is_card: {Boolean} Whether the media is used in a card. Default: false
+  
+  Usage:
+  {% render 'product-thumbnail', media: media, media_aspect_ratio: media_aspect_ratio, media_width: media_width, lazy_load: lazy_load, show_image_outline: show_image_outline, image_ratio: image_ratio, is_card: is_card %}
+{% endcomment %}
+
+{%- liquid
+  assign media_aspect_ratio = media_aspect_ratio | default: media.aspect_ratio
+  assign media_width = media_width | default: 200
+  assign lazy_load = lazy_load | default: true
+  assign show_image_outline = show_image_outline | default: true
+  assign image_ratio = image_ratio | default: 'adapt'
+  assign is_card = is_card | default: false
+  
+  if media_aspect_ratio == nil
+    assign media_aspect_ratio = 1
+  endif
+-%}
+
+<div class="product-thumbnail{% if show_image_outline %} product-thumbnail--outline{% endif %}{% if is_card %} product-thumbnail--card{% endif %}">
+  {%- case media.media_type -%}
+    {%- when 'image' -%}
+      <img
+        srcset="{%- if media.width >= 165 -%}{{ media | image_url: width: 165 }} 165w,{%- endif -%}
+                {%- if media.width >= 360 -%}{{ media | image_url: width: 360 }} 360w,{%- endif -%}
+                {%- if media.width >= 533 -%}{{ media | image_url: width: 533 }} 533w,{%- endif -%}
+                {%- if media.width >= 720 -%}{{ media | image_url: width: 720 }} 720w,{%- endif -%}
+                {%- if media.width >= 940 -%}{{ media | image_url: width: 940 }} 940w,{%- endif -%}
+                {%- if media.width >= 1066 -%}{{ media | image_url: width: 1066 }} 1066w,{%- endif -%}
+                {{ media | image_url }} {{ media.width }}w"
+        src="{{ media | image_url: width: 533 }}"
+        sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)"
+        alt="{{ media.alt | escape }}"
+        class="product-thumbnail__image"
+        {% if lazy_load %}loading="lazy"{% endif %}
+        width="{{ media_width }}"
+        height="{{ media_width | divided_by: media_aspect_ratio | ceil }}"
+      >
+    {%- when 'external_video' -%}
+      <div class="product-thumbnail__video">
+        {{ media | external_video_tag: loading: lazy_load ? 'lazy' : 'eager' }}
+      </div>
+    {%- when 'video' -%}
+      <div class="product-thumbnail__video">
+        {{ media | video_tag: image_size: "533x", loading: lazy_load ? 'lazy' : 'eager' }}
+      </div>
+    {%- when 'model' -%}
+      <div class="product-thumbnail__model">
+        {{ media | model_viewer_tag: image_size: "533x", loading: lazy_load ? 'lazy' : 'eager' }}
+      </div>
+  {%- endcase -%}
+</div>

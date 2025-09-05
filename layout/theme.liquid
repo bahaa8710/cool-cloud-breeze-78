@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     {%- if settings.favicon != blank -%}
-      <link rel="icon" type="image/png" href="{{ settings.favicon | img_url: '32x32' }}">
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: '32x32' }}">
     {%- endif -%}
     
     {%- capture seo_title -%}
@@ -30,8 +30,8 @@
     <link rel="canonical" href="{{ canonical_url }}">
 
     {%- unless settings.social_sharing_image == blank -%}
-      <meta property="og:image" content="http:{{ settings.social_sharing_image | img_url: '1200x630' }}">
-      <meta property="og:image:secure_url" content="https:{{ settings.social_sharing_image | img_url: '1200x630' }}">
+      <meta property="og:image" content="http:{{ settings.social_sharing_image | image_url: '1200x630' }}">
+      <meta property="og:image:secure_url" content="https:{{ settings.social_sharing_image | image_url: '1200x630' }}">
       <meta property="og:image:width" content="1200">
       <meta property="og:image:height" content="630">
     {%- endunless -%}
@@ -72,7 +72,7 @@
         "url": {{ shop.url | append: product.url | json }},
         {%- if seo_media -%}
           "image": [
-            {{ seo_media | img_url: '1080x' | prepend: "https:" | json }}
+            {{ seo_media | image_url: '1080x' | prepend: "https:" | json }}
           ],
         {%- endif -%}
         "description": {{ product.description | strip_html | json }},

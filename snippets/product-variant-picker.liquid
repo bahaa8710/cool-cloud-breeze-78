@@ -11,11 +11,12 @@
 {% endcomment %}
 
 {%- unless product.has_only_default_variant -%}
-  <variant-radios 
+  <variant-selects 
     class="no-js-hidden" 
     data-section="{{ section.id }}" 
     data-url="{{ product.url }}" 
     data-update-url="true"
+    data-original-section="{{ section.id }}"
   >
     {%- for option in product.options_with_values -%}
       <fieldset class="js product-form__input product-form__input--pill">
@@ -81,10 +82,10 @@
       </fieldset>
     {%- endfor -%}
     
-    <script type="application/json">
+    <script type="application/json" id="product-json-{{ section.id }}">
       {{ product.variants | json }}
     </script>
-  </variant-radios>
+  </variant-selects>
 
   {%- comment -%} Alternative pour JS désactivé {%- endcomment -%}
   <noscript class="product-form__noscript-wrapper-{{ section.id }}">

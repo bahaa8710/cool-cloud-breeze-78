@@ -1,131 +1,138 @@
-if (!customElements.get('product-form')) {
-  customElements.define('product-form', class ProductForm extends HTMLElement {
-    constructor() {
-      super();
+/**
+ * Product Form - Compatible avec Dawn
+ * Gère l'ajout au panier et les interactions du formulaire produit
+ */
 
-      this.form = this.querySelector('form');
-      if (this.form) {
-        this.form.querySelector('[name=id]').disabled = false;
-        this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
-      }
-      
-      this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
-      this.submitButton = this.querySelector('[type="submit"]');
-      
-      if (document.querySelector('cart-drawer') && this.submitButton) {
-        this.submitButton.setAttribute('aria-haspopup', 'dialog');
-      }
+class ProductForm extends HTMLElement {
+  constructor() {
+    super();
+    this.form = this.querySelector('form');
+    this.form.querySelector('[name=id]').disabled = false;
+    this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
+    this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
+    this.submitButton = this.querySelector('[type="submit"]');
+  }
 
-      // Initialiser les données produit
-      const productJson = document.querySelector('[data-product-json]');
-      if (productJson) {
-        this.product = JSON.parse(productJson.textContent);
-        this.variantData = this.product.variants;
-        this.currentVariant = this.product.selected_or_first_available_variant;
-      }
-      
-      console.log('🚀 ProductForm initialisé (Dawn):', this.product?.title);
+  onSubmitHandler(evt) {
+    evt.preventDefault();
+    if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
+
+    this.handleErrorMessage();
+
+    this.submitButton.setAttribute('aria-disabled', true);
+    this.submitButton.classList.add('loading');
+    this.querySelector('.loading__spinner').classList.remove('hidden');
+
+    const config = {
+      method: 'POST',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/javascript',
+      },
+      body: new FormData(this.form)
+    };
+
+    if (this.cart) {
+      config.sections = this.cart.getSectionsToRender().map((section) => section.id);
+      config.sections_url = window.location.pathname;
+      config.headers['Content-Type'] = 'application/json';
+      config.body = JSON.stringify({
+        ...Object.fromEntries(new FormData(this.form)),
+        sections: config.sections,
+        sections_url: config.sections_url
+      });
     }
 
-    onSubmitHandler(evt) {
-      evt.preventDefault();
-      if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
-
-      this.handleErrorMessage();
-
-      this.submitButton.setAttribute('aria-disabled', true);
-      this.submitButton.classList.add('loading');
-      
-      const spinner = this.querySelector('.loading-overlay__spinner, .loading__spinner');
-      if (spinner) spinner.classList.remove('hidden');
-
-      const config = fetchConfig('javascript');
-      config.headers['X-Requested-With'] = 'XMLHttpRequest';
-      delete config.headers['Content-Type'];
-
-      const formData = new FormData(this.form);
-      if (this.cart) {
-        formData.append('sections', this.getSectionsToRender().map((section) => section.id));
-        formData.append('sections_url', window.location.pathname);
-        this.cart.setActiveElement && this.cart.setActiveElement(document.activeElement);
-      }
-      config.body = formData;
-
-      fetch(`${routes?.cart_add_url || '/cart/add'}`, config)
-        .then((response) => response.json())
-        .then((response) => {
-          if (response.status) {
-            this.handleErrorMessage(response.description);
-
-            const soldOutMessage = this.submitButton.querySelector('.sold-out-message');
-            if (!soldOutMessage) return;
-            this.submitButton.setAttribute('aria-disabled', true);
-            if (soldOutMessage) soldOutMessage.classList.remove('hidden');
-            this.error = true;
-            return;
-          } else if (!this.cart) {
-            window.location = window.routes?.cart_url || '/cart';
-            return;
-          }
-
-          this.error = false;
-          const quickAddModal = this.closest('quick-add-modal');
-          if (quickAddModal) {
-            document.body.addEventListener('modalClosed', () => {
-              setTimeout(() => { this.cart.renderContents && this.cart.renderContents(response) });
-            }, { once: true });
-            quickAddModal.hide(true);
-          } else {
-            this.cart.renderContents && this.cart.renderContents(response);
-          }
-        })
-        .catch((e) => {
-          console.error('Erreur ajout au panier:', e);
-        })
-        .finally(() => {
-          this.submitButton.classList.remove('loading');
-          if (this.cart && this.cart.classList.contains('is-empty')) {
-            this.cart.classList.remove('is-empty');
-          }
-          if (!this.error) this.submitButton.removeAttribute('aria-disabled');
-          const spinner = this.querySelector('.loading-overlay__spinner, .loading__spinner');
-          if (spinner) spinner.classList.add('hidden');
-        });
-    }
-
-    getSectionsToRender() {
-      return [
-        {
-          id: this.dataset.sectionId,
-          section: document.getElementById(this.dataset.sectionId),
-          selector: '.product-form__buttons'
-        }
-      ];
-    }
-
-    handleErrorMessage(errorMessage = false) {
-      if (errorMessage) {
-        this.errorMessageWrapper = this.errorMessageWrapper || this.querySelector('.product-form__error-message-wrapper');
-        this.errorMessage = this.errorMessage || this.errorMessageWrapper?.querySelector('.product-form__error-message');
-
-        if (this.errorMessageWrapper) {
-          this.errorMessageWrapper.toggleAttribute('hidden', !errorMessage);
+    fetch(`${routes.cart_add_url}`, config)
+      .then((response) => response.json())
+      .then((response) => {
+        if (response.status) {
+          this.handleErrorMessage(response.description);
+          
+          const soldOutMessage = this.submitButton.querySelector('.sold-out-message');
+          if (!soldOutMessage) return;
+          this.submitButton.setAttribute('aria-disabled', true);
+          this.submitButton.querySelector('span').classList.add('hidden');
+          soldOutMessage.classList.remove('hidden');
+          this.error = true;
+          return;
+        } else if (!this.cart) {
+          window.location = window.routes.cart_url;
+          return;
         }
 
-        if (errorMessage && this.errorMessage) {
-          this.errorMessage.textContent = errorMessage;
+        this.error = false;
+        const quickAddModal = this.closest('quick-add-modal');
+        if (quickAddModal) {
+          document.body.addEventListener('modalClosed', () => {
+            setTimeout(() => { this.cart.renderContents(response) });
+          }, { once: true });
+          quickAddModal.hide(true);
+        } else {
+          this.cart.renderContents(response);
         }
-      }
+      })
+      .catch((e) => {
+        console.error(e);
+      })
+      .finally(() => {
+        this.submitButton.classList.remove('loading');
+        if (this.cart && this.cart.classList.contains('is-empty')) this.cart.classList.remove('is-empty');
+        if (!this.error) this.submitButton.removeAttribute('aria-disabled');
+        this.querySelector('.loading__spinner').classList.add('hidden');
+      });
+  }
+
+  handleErrorMessage(errorMessage = false) {
+    this.errorMessageWrapper = this.errorMessageWrapper || this.querySelector('.product-form__error-message-wrapper');
+    if (!this.errorMessageWrapper) return;
+    this.errorMessage = this.errorMessage || this.errorMessageWrapper.querySelector('.product-form__error-message');
+
+    this.errorMessageWrapper.toggleAttribute('hidden', !errorMessage);
+
+    if (errorMessage) {
+      this.errorMessage.textContent = errorMessage;
     }
+  }
+}
+
+// Quantity Input Logic
+class QuantityInput extends HTMLElement {
+  constructor() {
+    super();
+    this.input = this.querySelector('input');
+    this.changeEvent = new Event('change', { bubbles: true });
+    this.querySelectorAll('button').forEach(
+      (button) => button.addEventListener('click', this.onButtonClick.bind(this))
+    );
+  }
+
+  onButtonClick(event) {
+    event.preventDefault();
+    const previousValue = this.input.value;
+
+    if (event.target.name === 'plus') {
+      this.input.stepUp();
+    } else {
+      this.input.stepDown();
+    }
+    if (previousValue !== this.input.value) this.input.dispatchEvent(this.changeEvent);
+  }
+}
+
+// Enregistrement des custom elements
+customElements.define('product-form', ProductForm);
+customElements.define('quantity-input', QuantityInput);
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', function() {
+  const productForms = document.querySelectorAll('product-form');
+  productForms.forEach(form => {
+    new ProductForm();
   });
-}
-
-// Utilitaire pour les requêtes fetch
-function fetchConfig(type = 'json') {
-  return {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: `application/${type}` }
-  };
-}
-
-console.log('✅ ProductForm défini (Dawn)');
+  
+  const quantityInputs = document.querySelectorAll('quantity-input');
+  quantityInputs.forEach(input => {
+    new QuantityInput();
+  });
+});

@@ -15,7 +15,7 @@
           {%- if section.settings.logo != blank -%}
             <div class="header__heading-logo-wrapper">
               <img
-                src="{{ section.settings.logo | img_url: '180x' }}"
+                src="{{ section.settings.logo | image_url: '180x' }}"
                 alt="{{ section.settings.logo.alt | default: shop.name | escape }}"
                 class="header__heading-logo"
                 width="{{ section.settings.logo_max_width }}"
@@ -148,7 +148,7 @@
   "@type": "Organization",
   "name": {{ shop.name | json }},
   {% if section.settings.logo %}
-    "logo": {{ section.settings.logo | img_url: '500x500' | prepend: "https:" | json }},
+    "logo": {{ section.settings.logo | image_url: '500x500' | prepend: "https:" | json }},
   {% endif %}
   "sameAs": [
     {{ settings.social_twitter_link | json }},

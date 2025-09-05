@@ -1,29 +1,181 @@
+/**
+ * Variant Selects - Compatible avec Dawn
+ * Gère les sélecteurs de variantes avec des selects
+ */
+
 class VariantSelects extends HTMLElement {
   constructor() {
     super();
-    this.addEventListener('change', this.onVariantChange.bind(this));
-    console.log('🎯 VariantSelects initialisé');
+    this.addEventListener('change', this.onVariantChange);
+    this.updateOptions();
+    this.updateMasterId();
+    this.setAvailability();
   }
 
-  onVariantChange(event) {
-    const target = event.target;
-    console.log('🔄 Changement variant-selects:', target.name, target.value);
-    
-    // Déclencher un événement que ProductForm peut écouter
-    this.dispatchEvent(new CustomEvent('variantSelects:change', {
-      detail: { 
-        element: target,
-        value: target.value,
-        name: target.name 
-      },
-      bubbles: true
-    }));
+  onVariantChange() {
+    this.updateOptions();
+    this.updateMasterId();
+    this.toggleAddButton(true, '', false);
+    this.updatePickupAvailability();
+    this.removeErrorMessage();
+
+    if (!this.currentVariant) {
+      this.toggleAddButton(true, '', true);
+      this.setUnavailable();
+    } else {
+      this.updateMedia();
+      this.updateURL();
+      this.updateVariantInput();
+      this.renderProductInfo();
+      this.setAvailability();
+    }
+  }
+
+  updateOptions() {
+    this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
+  }
+
+  updateMasterId() {
+    this.currentVariant = this.getVariantData().find((variant) => {
+      return !variant.options.map((option, index) => {
+        return this.options[index] === option;
+      }).includes(false);
+    });
+  }
+
+  updateMedia() {
+    if (!this.currentVariant) return;
+    if (!this.currentVariant.featured_media) return;
+
+    const mediaGallery = document.querySelector('product-media-gallery');
+    if (mediaGallery && this.currentVariant.featured_media) {
+      mediaGallery.setActiveMedia(this.currentVariant.featured_media.id);
+    }
+  }
+
+  updateURL() {
+    if (!this.currentVariant || this.dataset.updateUrl === 'false') return;
+    window.history.replaceState({ }, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+  }
+
+  updateVariantInput() {
+    const productForms = document.querySelectorAll(`#product-form-${this.dataset.section}, form[data-type="add-to-cart-form"]`);
+    productForms.forEach((productForm) => {
+      const input = productForm.querySelector('input[name="id"]');
+      if (input) {
+        input.value = this.currentVariant.id;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+  }
+
+  updatePickupAvailability() {
+    const pickUpAvailability = document.querySelector('pickup-availability');
+    if (!pickUpAvailability) return;
+
+    if (this.currentVariant && this.currentVariant.available) {
+      pickUpAvailability.fetchAvailability(this.currentVariant.id);
+    } else {
+      pickUpAvailability.removeAttribute('available');
+      pickUpAvailability.innerHTML = '';
+    }
+  }
+
+  removeErrorMessage() {
+    const section = this.closest('section');
+    if (!section) return;
+
+    const productForm = section.querySelector('product-form');
+    if (productForm) productForm.handleErrorMessage();
+  }
+
+  renderProductInfo() {
+    const requestedVariantId = this.currentVariant.id;
+    const sectionId = this.dataset.section;
+
+    fetch(`${this.dataset.url}?variant=${requestedVariantId}&section_id=${this.dataset.originalSection}`)
+      .then((response) => response.text())
+      .then((responseText) => {
+        if (this.currentVariant.id !== requestedVariantId) return;
+
+        const html = new DOMParser().parseFromString(responseText, 'text/html');
+        const destination = document.getElementById(`price-${sectionId}`);
+        const source = html.getElementById(`price-${sectionId}`);
+
+        if (source && destination) destination.innerHTML = source.innerHTML;
+
+        const price = document.getElementById(`price-${sectionId}`);
+        if (price) price.classList.remove('visibility-hidden');
+        
+        this.toggleAddButton(
+          !this.currentVariant.available,
+          this.currentVariant.available ? '' : window.variantStrings.soldOut
+        );
+      });
+  }
+
+  setAvailability() {
+    this.querySelectorAll('select').forEach((select, index) => {
+      const optionValue = select.value;
+      const variantOption = `option${index + 1}`;
+
+      const availableVariants = this.getVariantData().filter((variant) => {
+        return this.options.every((selectedOption, selectedOptionIndex) => {
+          if (selectedOptionIndex === index) return true;
+          const variantOptionName = `option${selectedOptionIndex + 1}`;
+          return variant[variantOptionName] === selectedOption;
+        });
+      });
+
+      if (availableVariants.length === 0) {
+        select.disabled = true;
+      } else {
+        select.disabled = false;
+      }
+    });
+  }
+
+  toggleAddButton(disable = true, text, modifyClass = true) {
+    const productForm = document.getElementById(`product-form-${this.dataset.section}`);
+    if (!productForm) return;
+
+    const addButton = productForm.querySelector('[name="add"]');
+    const addButtonText = productForm.querySelector('[name="add"] > span');
+    if (!addButton) return;
+
+    if (disable) {
+      addButton.setAttribute('disabled', 'disabled');
+      if (text) addButtonText.textContent = text;
+    } else {
+      addButton.removeAttribute('disabled');
+      addButtonText.textContent = window.variantStrings.addToCart || 'Ajouter au panier';
+    }
+  }
+
+  setUnavailable() {
+    const button = document.getElementById(`product-form-${this.dataset.section}`);
+    const addButton = button.querySelector('[name="add"]');
+    const addButtonText = button.querySelector('[name="add"] > span');
+    const price = document.getElementById(`price-${this.dataset.section}`);
+    if (!addButton) return;
+
+    addButtonText.textContent = window.variantStrings.unavailable || 'Non disponible';
+    if (price) price.classList.add('visibility-hidden');
+  }
+
+  getVariantData() {
+    this.variantData = this.variantData || JSON.parse(document.getElementById(`product-json-${this.dataset.section}`).textContent);
+    return this.variantData;
   }
 }
 
-// Enregistrer le composant
-if (!customElements.get('variant-selects')) {
-  customElements.define('variant-selects', VariantSelects);
-}
+// Enregistrement du custom element
+customElements.define('variant-selects', VariantSelects);
 
-console.log('✅ VariantSelects défini');
+// Initialisation
+document.addEventListener('DOMContentLoaded', function() {
+  const variantSelects = document.querySelectorAll('variant-selects');
+  variantSelects.forEach(selects => {
+    new VariantSelects();
+  });
+});

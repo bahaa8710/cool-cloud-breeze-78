@@ -1,0 +1,208 @@
+{% comment %}
+  Renders product media gallery
+  
+  Accepts:
+  - product: {Object} Product object
+  - variant: {Object} Selected variant object
+  - enable_video_looping: {Boolean} Enable video looping
+  - media_aspect_ratio: {String} Media aspect ratio
+  - media_width: {Number} Media width
+  - media_fit: {String} Media fit
+  - constrain_to_viewport: {Boolean} Constrain to viewport
+  - show_thumbnails: {Boolean} Show thumbnails
+  - enable_image_zoom: {Boolean} Enable image zoom
+  - enable_video_looping: {Boolean} Enable video looping
+  
+  Usage:
+  {% render 'product-media-gallery', product: product, variant: variant, show_thumbnails: true, enable_image_zoom: true %}
+{% endcomment %}
+
+{%- liquid
+  assign media_aspect_ratio = media_aspect_ratio | default: 'adapt'
+  assign media_width = media_width | default: 800
+  assign media_fit = media_fit | default: 'contain'
+  assign constrain_to_viewport = constrain_to_viewport | default: true
+  assign show_thumbnails = show_thumbnails | default: true
+  assign enable_image_zoom = enable_image_zoom | default: true
+  assign enable_video_looping = enable_video_looping | default: false
+  
+  assign featured_media = variant.featured_media | default: product.featured_media
+  assign media_count = product.media.size
+-%}
+
+<div class="product-media-gallery" data-section="{{ section.id }}">
+  <div class="product-media-gallery__main">
+    <div class="product-media-gallery__slider" data-slider>
+      {%- for media in product.media -%}
+        <div class="product-media-gallery__slide{% if media == featured_media %} product-media-gallery__slide--active{% endif %}" 
+             data-media-id="{{ media.id }}" 
+             data-media-type="{{ media.media_type }}"
+             data-media-position="{{ forloop.index0 }}">
+          
+          {%- case media.media_type -%}
+            {%- when 'image' -%}
+              <div class="product-media-gallery__image-wrapper">
+                <img
+                  srcset="{%- if media.width >= 165 -%}{{ media | image_url: width: 165 }} 165w,{%- endif -%}
+                          {%- if media.width >= 360 -%}{{ media | image_url: width: 360 }} 360w,{%- endif -%}
+                          {%- if media.width >= 533 -%}{{ media | image_url: width: 533 }} 533w,{%- endif -%}
+                          {%- if media.width >= 720 -%}{{ media | image_url: width: 720 }} 720w,{%- endif -%}
+                          {%- if media.width >= 940 -%}{{ media | image_url: width: 940 }} 940w,{%- endif -%}
+                          {%- if media.width >= 1066 -%}{{ media | image_url: width: 1066 }} 1066w,{%- endif -%}
+                          {{ media | image_url }} {{ media.width }}w"
+                  src="{{ media | image_url: width: 533 }}"
+                  sizes="(min-width: 1200px) 600px, (min-width: 750px) 50vw, 100vw"
+                  alt="{{ media.alt | escape }}"
+                  class="product-media-gallery__image"
+                  loading="lazy"
+                  width="{{ media.width }}"
+                  height="{{ media.height }}"
+                  {% if enable_image_zoom %}data-zoom="{{ media | image_url: width: 2048 }}"{% endif %}
+                >
+                
+                {%- if enable_image_zoom -%}
+                  <button class="product-media-gallery__zoom-btn" data-zoom-trigger aria-label="Zoom image">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="11" cy="11" r="8"/>
+                      <path d="m21 21-4.35-4.35"/>
+                      <line x1="11" y1="8" x2="11" y2="14"/>
+                      <line x1="8" y1="11" x2="14" y2="11"/>
+                    </svg>
+                  </button>
+                {%- endif -%}
+              </div>
+              
+            {%- when 'external_video' -%}
+              <div class="product-media-gallery__video-wrapper">
+                {{ media | external_video_tag: loading: 'lazy', class: 'product-media-gallery__video' }}
+              </div>
+              
+            {%- when 'video' -%}
+              <div class="product-media-gallery__video-wrapper">
+                {{ media | video_tag: 
+                    image_size: "533x", 
+                    loading: 'lazy', 
+                    class: 'product-media-gallery__video',
+                    controls: true,
+                    loop: enable_video_looping
+                }}
+              </div>
+              
+            {%- when 'model' -%}
+              <div class="product-media-gallery__model-wrapper">
+                {{ media | model_viewer_tag: 
+                    image_size: "533x", 
+                    loading: 'lazy', 
+                    class: 'product-media-gallery__model',
+                    reveal: 'interaction',
+                    toggle_icon: true
+                }}
+              </div>
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+    </div>
+    
+    {%- if media_count > 1 -%}
+      <div class="product-media-gallery__navigation">
+        <button class="product-media-gallery__nav-btn product-media-gallery__nav-btn--prev" data-slider-prev aria-label="Image précédente">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"/>
+          </svg>
+        </button>
+        <button class="product-media-gallery__nav-btn product-media-gallery__nav-btn--next" data-slider-next aria-label="Image suivante">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"/>
+          </svg>
+        </button>
+      </div>
+    {%- endif -%}
+  </div>
+  
+  {%- if show_thumbnails and media_count > 1 -%}
+    <div class="product-media-gallery__thumbnails">
+      {%- for media in product.media -%}
+        <button class="product-media-gallery__thumbnail{% if media == featured_media %} product-media-gallery__thumbnail--active{% endif %}" 
+                data-media-id="{{ media.id }}"
+                data-media-position="{{ forloop.index0 }}"
+                aria-label="Voir {{ media.alt | default: 'image' | escape }}">
+          
+          {%- case media.media_type -%}
+            {%- when 'image' -%}
+              <img
+                src="{{ media | image_url: width: 200 }}"
+                alt="{{ media.alt | escape }}"
+                class="product-media-gallery__thumbnail-image"
+                loading="lazy"
+                width="100"
+                height="100"
+              >
+            {%- when 'external_video' -%}
+              <div class="product-media-gallery__thumbnail-video">
+                <img
+                  src="{{ media.preview_image | image_url: width: 200 }}"
+                  alt="{{ media.alt | escape }}"
+                  class="product-media-gallery__thumbnail-image"
+                  loading="lazy"
+                  width="100"
+                  height="100"
+                >
+                <div class="product-media-gallery__thumbnail-play">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5,3 19,12 5,21"/>
+                  </svg>
+                </div>
+              </div>
+            {%- when 'video' -%}
+              <div class="product-media-gallery__thumbnail-video">
+                <img
+                  src="{{ media.preview_image | image_url: width: 200 }}"
+                  alt="{{ media.alt | escape }}"
+                  class="product-media-gallery__thumbnail-image"
+                  loading="lazy"
+                  width="100"
+                  height="100"
+                >
+                <div class="product-media-gallery__thumbnail-play">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5,3 19,12 5,21"/>
+                  </svg>
+                </div>
+              </div>
+            {%- when 'model' -%}
+              <div class="product-media-gallery__thumbnail-model">
+                <img
+                  src="{{ media.preview_image | image_url: width: 200 }}"
+                  alt="{{ media.alt | escape }}"
+                  class="product-media-gallery__thumbnail-image"
+                  loading="lazy"
+                  width="100"
+                  height="100"
+                >
+                <div class="product-media-gallery__thumbnail-3d">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                </div>
+              </div>
+          {%- endcase -%}
+        </button>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+<!-- Modal pour le zoom d'image -->
+{%- if enable_image_zoom -%}
+  <div class="product-media-gallery__modal" data-zoom-modal>
+    <div class="product-media-gallery__modal-content">
+      <button class="product-media-gallery__modal-close" data-zoom-close aria-label="Fermer">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <img class="product-media-gallery__modal-image" data-zoom-image alt="">
+    </div>
+  </div>
+{%- endif -%}

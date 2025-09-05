@@ -1,0 +1,14 @@
+{% comment %}
+  Renders a star icon
+  
+  Accepts:
+  - class: {String} Additional CSS classes
+  - filled: {Boolean} Whether the star should be filled
+  
+  Usage:
+  {% render 'icon-star', class: 'my-class', filled: true %}
+{% endcomment %}
+
+<svg class="icon icon-star {{ class }}" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path {% if filled %}fill="currentColor"{% else %}fill="none" stroke="currentColor" stroke-width="2"{% endif %} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+</svg>

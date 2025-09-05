@@ -23,7 +23,7 @@
                     </p>
                     <div class="testimonial-author">
                         {% if block.settings.avatar != blank %}
-                          <img src="{{ block.settings.avatar | img_url: '150x150' }}" alt="{{ block.settings.name }}">
+                          <img src="{{ block.settings.avatar | image_url: '150x150' }}" alt="{{ block.settings.name }}">
                         {% else %}
                           {% case forloop.index %}
                             {% when 1 %}
