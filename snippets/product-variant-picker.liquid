@@ -1,0 +1,117 @@
+{% comment %}
+  Renders product variant-picker
+  
+  Accepts:
+  - product: {Object} product object.
+  - block: {Object} passing the block information.
+  - product_form_id: {String} Id of the product form to which the variant picker is associated.
+  
+  Usage:
+  {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
+{% endcomment %}
+
+{%- unless product.has_only_default_variant -%}
+  <variant-radios 
+    class="no-js-hidden" 
+    data-section="{{ section.id }}" 
+    data-url="{{ product.url }}" 
+    data-update-url="true"
+  >
+    {%- for option in product.options_with_values -%}
+      <fieldset class="js product-form__input product-form__input--pill">
+        <legend class="form__label">{{ option.name }}</legend>
+        {%- for value in option.values -%}
+          {%- liquid
+            assign option_disabled = true
+            for variant in product.variants
+              case option.position
+                when 1
+                  if variant.option1 == value and variant.available
+                    assign option_disabled = false
+                  endif
+                when 2
+                  if variant.option1 == product.selected_or_first_available_variant.option1 and variant.option2 == value and variant.available
+                    assign option_disabled = false
+                  endif
+                when 3
+                  if variant.option1 == product.selected_or_first_available_variant.option1 and variant.option2 == product.selected_or_first_available_variant.option2 and variant.option3 == value and variant.available
+                    assign option_disabled = false
+                  endif
+              endcase
+            endfor
+          -%}
+          
+          <input
+            type="radio"
+            id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+            name="{{ option.name }}"
+            value="{{ value | escape }}"
+            form="{{ product_form_id }}"
+            {% if option.selected_value == value %}checked{% endif %}
+            {% if option_disabled %}disabled{% endif %}
+            class="variant-picker__radio"
+          >
+          
+          {%- assign option_name_lower = option.name | downcase -%}
+          {%- if option_name_lower contains 'color' or option_name_lower contains 'couleur' -%}
+            <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}" class="color-swatch" title="{{ value }}">
+              <span class="color-swatch__color" 
+                    style="background-color: {% case value | downcase %}
+                      {% when 'blue', 'bleu' %}#4285f4
+                      {% when 'pink', 'rose' %}#ea4c89
+                      {% when 'white', 'blanc' %}#ffffff
+                      {% when 'black', 'noir' %}#333333
+                      {% else %}{{ value | downcase }}
+                    {% endcase %};">
+              </span>
+              <span class="visually-hidden">{{ value }}</span>
+              {%- if option_disabled -%}
+                <span class="visually-hidden">(Non disponible)</span>
+              {%- endif -%}
+            </label>
+          {%- else -%}
+            <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}" class="variant-pill">
+              {{ value }}
+              {%- if option_disabled -%}
+                <span class="visually-hidden">(Non disponible)</span>
+              {%- endif -%}
+            </label>
+          {%- endif -%}
+        {%- endfor -%}
+      </fieldset>
+    {%- endfor -%}
+    
+    <script type="application/json">
+      {{ product.variants | json }}
+    </script>
+  </variant-radios>
+
+  {%- comment -%} Alternative pour JS désactivé {%- endcomment -%}
+  <noscript class="product-form__noscript-wrapper-{{ section.id }}">
+    <div class="product-form__input">
+      <label class="form__label" for="Variants-{{ section.id }}">
+        {{ 'products.product.product_variants' | t }}
+      </label>
+      <div class="select">
+        <select name="id" id="Variants-{{ section.id }}" class="select__select" form="{{ product_form_id }}">
+          {%- for variant in product.variants -%}
+            <option 
+              value="{{ variant.id }}"
+              {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+              {% unless variant.available %}disabled{% endunless %}
+            >
+              {%- liquid
+                echo variant.title
+                echo variant.price | money | prepend: ' - '
+                if variant.available == false
+                  echo 'products.product.sold_out' | t | prepend: ' - '
+                endif
+              -%}
+            </option>
+          {%- endfor -%}
+        </select>
+        {% render 'icon-caret' %}
+      </div>
+    </div>
+  </noscript>
+{%- endunless -%}

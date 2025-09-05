@@ -88,35 +88,31 @@
                     {{ product.description | truncatewords: 50 }}
                 </div>
 
-                <!-- Formulaire d'achat Shopify avec toutes les fonctionnalités Dawn -->
-                <product-form class="product-form" data-section-id="{{ section.id }}">
+                <!-- Product Form Dawn Structure -->
+                <product-form class="product-form" data-section="{{ section.id }}">
+                  <div class="product-form__error-message-wrapper" role="alert" hidden>
+                    <svg aria-hidden="true" focusable="false" class="icon icon-error" viewBox="0 0 13 13">
+                      <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+                      <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+                      <path d="m5.87413 3.52832 5.6635 9.5737c.24749.42626.02049.96966-.49134.96966H2.65893c-.51183 0-.73883-.54341-.49134-.96966l5.6635-9.5737a.50033.50033 0 0 1 .87654 0Z" fill="white"/>
+                      <path d="m4.19583 7.00049-.71184 3.8984c-.02951.16234.08112.30135.24885.30135h2.51632c.16773 0 .27836-.13901.24885-.30135L6.80417 7.00049H4.19583Z" fill="#EB001B"/>
+                    </svg>
+                    <span class="product-form__error-message"></span>
+                  </div>
+
                   {%- form 'product', product, id: 'product-form-{{ section.id }}', class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
-                    <!-- ID de la variante sélectionnée -->
-                    <input type="hidden" name="id" value="{{ current_variant.id }}" class="product-variant-id">
+                    <input type="hidden" name="form_type" value="product">
+                    <input type="hidden" name="utf8" value="✓">
+                    <input type="hidden" name="id" value="{{ current_variant.id }}" disabled>
                     
                     <!-- Script avec données produit pour JavaScript -->
                     <script type="application/json" data-product-json>
                       {{ product | json }}
                     </script>
 
-                    <!-- Sélecteur de variantes avec wrapper variant-selects -->
+                    <!-- Sélecteur de variantes Dawn -->
                     {% unless product.has_only_default_variant %}
-                      <variant-selects 
-                        class="no-js-hidden product-variants" 
-                        data-section="{{ section.id }}" 
-                        data-url="{{ product.url }}"
-                        data-original-section="{{ section.id }}"
-                      >
-                        {% for option in product.options_with_values %}
-                          <fieldset class="js product-form__input" id="product-form-{{ section.id }}-option-{{ option.position }}" data-option-index="{{ option.position }}">
-                            <legend class="form__label">{{ option.name }}:</legend>
-                            {% render 'product-variant-options', product: product, option: option, block: block %}
-                          </fieldset>
-                        {% endfor %}
-                        <script type="application/json" id="product-json-{{ section.id }}">
-                          {{ product.variants | json }}
-                        </script>
-                      </variant-selects>
+                      {% render 'product-variant-picker', product: product, block: block, product_form_id: 'product-form-{{ section.id }}' %}
                     {% endunless %}
 
                     <!-- Sélecteur de quantité -->
@@ -212,9 +208,10 @@
                   {%- endform -%}
                 </noscript>
 
-<!-- Chargement des scripts et styles -->
+<!-- Chargement des scripts et styles Dawn -->
 {{ 'component-product-form.css' | asset_url | stylesheet_tag }}
-{{ 'variant-selects.js' | asset_url | script_tag }}
+{{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
+{{ 'variant-radios.js' | asset_url | script_tag }}
 {{ 'product-form.js' | asset_url | script_tag }}
 {{ 'product-buy-now.js' | asset_url | script_tag }}
             </div>

@@ -1,0 +1,230 @@
+/* Product Form Variant Picker */
+.product-form__input {
+  flex: 0 0 100%;
+  padding: 0;
+  margin: 0 0 1.2rem 0;
+  max-width: 37rem;
+  min-width: fit-content;
+  border: none;
+}
+
+.product-form__input legend {
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+  color: rgb(var(--color-foreground));
+  font-size: 1.4rem;
+}
+
+/* Radio inputs masqués */
+.variant-picker__radio {
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+  position: absolute;
+  height: 1px;
+  width: 1px;
+}
+
+/* Pills standard pour les variantes */
+.variant-pill {
+  border: 2px solid rgba(var(--color-foreground), 0.2);
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  border-radius: 8px;
+  display: inline-block;
+  margin: 0 0.8rem 0.8rem 0;
+  padding: 0.8rem 1.6rem;
+  font-size: 1.4rem;
+  letter-spacing: 0.05rem;
+  line-height: 1;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  font-weight: 500;
+}
+
+.variant-picker__radio:checked + .variant-pill {
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  border-color: rgb(var(--color-foreground));
+}
+
+.variant-picker__radio:disabled + .variant-pill {
+  border-color: rgba(var(--color-foreground), 0.2);
+  color: rgba(var(--color-foreground), 0.4);
+  text-decoration: line-through;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.variant-picker__radio:focus-visible + .variant-pill {
+  box-shadow: 0 0 0 0.3rem rgb(var(--color-background)),
+    0 0 0 0.5rem rgba(var(--color-foreground), 0.5);
+}
+
+/* Color Swatches */
+.color-swatch {
+  display: inline-block;
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: 50%;
+  border: 2px solid rgba(var(--color-foreground), 0.2);
+  cursor: pointer;
+  position: relative;
+  margin: 0 0.8rem 0.8rem 0;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.color-swatch:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.color-swatch__color {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.variant-picker__radio:checked + .color-swatch {
+  border-color: rgb(var(--color-foreground));
+  box-shadow: 0 0 0 2px rgba(var(--color-foreground), 0.2);
+  transform: scale(1.1);
+}
+
+.variant-picker__radio:focus-visible + .color-swatch {
+  outline: 2px solid rgb(var(--color-foreground));
+  outline-offset: 2px;
+}
+
+.variant-picker__radio:disabled + .color-swatch {
+  opacity: 0.5;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.variant-picker__radio:disabled + .color-swatch::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 120%;
+  background: #ff4757;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-radius: 1px;
+  z-index: 2;
+}
+
+/* Couleurs spécifiques pour les échantillons */
+.color-swatch__color[style*="blue"],
+.color-swatch__color[style*="#4285f4"] {
+  background-color: #4285f4 !important;
+}
+
+.color-swatch__color[style*="pink"],
+.color-swatch__color[style*="#ea4c89"] {
+  background-color: #ea4c89 !important;
+}
+
+.color-swatch__color[style*="white"],
+.color-swatch__color[style*="#ffffff"] {
+  background-color: #ffffff !important;
+  border-color: #d1d5db;
+}
+
+.color-swatch__color[style*="black"],
+.color-swatch__color[style*="#333333"] {
+  background-color: #333333 !important;
+}
+
+/* Responsive design */
+@media (max-width: 749px) {
+  .product-form__input {
+    max-width: 100%;
+  }
+  
+  .color-swatch {
+    width: 4rem;
+    height: 4rem;
+  }
+  
+  .variant-pill {
+    padding: 0.6rem 1.2rem;
+    margin: 0 0.6rem 0.6rem 0;
+  }
+}
+
+/* États de focus améliorés pour l'accessibilité */
+@media (forced-colors: active) {
+  .variant-picker__radio:checked + .variant-pill {
+    text-decoration: underline;
+  }
+  
+  .variant-picker__radio:checked + .color-swatch {
+    outline: 2px solid ButtonText;
+  }
+}
+
+/* Styles pour no-js fallback */
+.product-form__noscript-wrapper-{{ section.id }} {
+  margin-bottom: 1.2rem;
+}
+
+.select {
+  position: relative;
+}
+
+.select__select {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid rgba(var(--color-foreground), 0.2);
+  border-radius: 8px;
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  font-size: 1.4rem;
+  appearance: none;
+  cursor: pointer;
+}
+
+.select__select:focus {
+  outline: 2px solid rgb(var(--color-foreground));
+  outline-offset: 2px;
+}
+
+/* Animation de chargement pour les changements de variante */
+.variant-radios.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Utilitaire pour masquer visuellement */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Classe pour masquer les éléments quand JS est activé */
+.no-js-hidden {
+  display: block !important;
+}
+
+html.no-js .no-js-hidden {
+  display: none !important;
+}
+
+/* Classe pour les prix invisibles */
+.visibility-hidden {
+  visibility: hidden;
+}
