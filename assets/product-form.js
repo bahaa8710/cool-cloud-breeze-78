@@ -22,16 +22,16 @@ class ProductForm extends HTMLElement {
   }
 
   setupVariantListeners() {
-    // Écouter les changements sur tous les inputs de variantes
-    this.querySelectorAll('input[name^="options["], select[name^="options["]').forEach(input => {
+    // Écouter les changements sur tous les inputs de variantes avec les bons sélecteurs
+    const variantInputs = this.querySelectorAll('input[name*="options"], select[name*="options"], input.variant-input, .color-swatch input, .variant-button input');
+    
+    variantInputs.forEach(input => {
       input.addEventListener('change', this.onVariantChange.bind(this));
-      
-      // Log pour debug
       console.log('📋 Input variante ajouté:', input.name, input.value);
     });
 
     // Événements spéciaux pour les boutons quantité
-    this.querySelectorAll('.quantity__button').forEach(button => {
+    this.querySelectorAll('.quantity__button, .qty-minus, .qty-plus').forEach(button => {
       button.addEventListener('click', this.onQuantityChange.bind(this));
     });
   }

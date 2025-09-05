@@ -123,7 +123,20 @@
 /* Fix pour le CSS visible et autres problèmes */
 #more-payment-options-link {
   cursor: pointer !important;
-  display: none;
+  display: none !important;
+}
+
+/* Masquer tous les textes techniques et éléments indésirables */
+.product-form__tax-line *:contains("This item is a recurring"),
+.product-form__tax-line *:contains("Translation missing"),
+.recurring-purchase-text,
+.translation-missing,
+[class*="recurring"],
+[class*="deferred"],
+[class*="cancellation"],
+.shopify-policy-list {
+  display: none !important;
+  visibility: hidden !important;
 }
 
 /* Fix pour les boutons de paiement dynamique */
@@ -135,16 +148,18 @@
   border-radius: 12px !important;
 }
 
-/* Fix pour les textes techniques visibles */
-.product-form__tax-line {
-  font-size: 14px;
-  color: #666;
-  margin-top: 12px;
-  line-height: 1.4;
-}
-
 /* Masquer les éléments CSS qui s'affichent */
 style {
+  display: none !important;
+}
+
+/* Masquer spécifiquement les textes techniques Shop Pay */
+.additional-checkout-buttons ~ *,
+.dynamic-checkout__content ~ .small-text,
+.payment-terms,
+.payment-terms *,
+.shopify-payment-terms,
+.shopify-payment-terms * {
   display: none !important;
 }
 
