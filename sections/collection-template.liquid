@@ -47,7 +47,7 @@
               <div class="product-card-image">
                 <a href="{{ product.url }}">
                   {%- if product.featured_image -%}
-                    <img src="{{ product.featured_image | img_url: '400x' }}" 
+                    <img src="{{ product.featured_image | image_url: '400x' }}" 
                          alt="{{ product.featured_image.alt | default: product.title | escape }}"
                          loading="lazy">
                   {%- else -%}

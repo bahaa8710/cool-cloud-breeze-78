@@ -1,0 +1,321 @@
+/* Product Media Gallery Styles */
+.product-media-gallery {
+  position: relative;
+  width: 100%;
+}
+
+.product-media-gallery__main {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.product-media-gallery__slider {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #f8f9fa;
+}
+
+.product-media-gallery__slide {
+  display: none;
+  width: 100%;
+  position: relative;
+}
+
+.product-media-gallery__slide--active {
+  display: block;
+}
+
+.product-media-gallery__image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.product-media-gallery__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-media-gallery__image:hover {
+  transform: scale(1.05);
+}
+
+.product-media-gallery__zoom-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-media-gallery__zoom-btn:hover {
+  background: white;
+  transform: scale(1.1);
+}
+
+.product-media-gallery__video-wrapper,
+.product-media-gallery__model-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background: #f8f9fa;
+}
+
+.product-media-gallery__video,
+.product-media-gallery__model {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-media-gallery__navigation {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.product-media-gallery__nav-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 1rem;
+}
+
+.product-media-gallery__nav-btn:hover {
+  background: white;
+  transform: scale(1.1);
+}
+
+.product-media-gallery__nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.product-media-gallery__thumbnails {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.product-media-gallery__thumbnails::-webkit-scrollbar {
+  height: 4px;
+}
+
+.product-media-gallery__thumbnails::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.product-media-gallery__thumbnails::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 2px;
+}
+
+.product-media-gallery__thumbnail {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+  position: relative;
+}
+
+.product-media-gallery__thumbnail:hover {
+  border-color: #4285f4;
+  transform: scale(1.05);
+}
+
+.product-media-gallery__thumbnail--active {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.product-media-gallery__thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-media-gallery__thumbnail-video,
+.product-media-gallery__thumbnail-model {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.product-media-gallery__thumbnail-play,
+.product-media-gallery__thumbnail-3d {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal de zoom */
+.product-media-gallery__modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.product-media-gallery__modal--active {
+  display: flex;
+}
+
+.product-media-gallery__modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.product-media-gallery__modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.product-media-gallery__modal-close {
+  position: absolute;
+  top: -3rem;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.product-media-gallery__modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .product-media-gallery__thumbnails {
+    gap: 0.25rem;
+  }
+  
+  .product-media-gallery__thumbnail {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .product-media-gallery__nav-btn {
+    width: 36px;
+    height: 36px;
+    margin: 0 0.5rem;
+  }
+  
+  .product-media-gallery__zoom-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .product-media-gallery__modal {
+    padding: 1rem;
+  }
+}
+
+/* Animation pour les transitions */
+.product-media-gallery__slide {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Support pour les modèles 3D */
+.product-media-gallery__model {
+  background: #f8f9fa;
+}
+
+/* Amélioration de l'accessibilité */
+.product-media-gallery__thumbnail:focus,
+.product-media-gallery__nav-btn:focus,
+.product-media-gallery__zoom-btn:focus {
+  outline: 2px solid #4285f4;
+  outline-offset: 2px;
+}
+
+/* États de chargement */
+.product-media-gallery__slide--loading {
+  position: relative;
+}
+
+.product-media-gallery__slide--loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #4285f4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

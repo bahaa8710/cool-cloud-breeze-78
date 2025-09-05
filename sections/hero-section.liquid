@@ -30,7 +30,7 @@
             <!-- Image produit -->
             <div class="hero-image">
                 {%- if section.settings.hero_image != blank -%}
-                  <img src="{{ section.settings.hero_image | img_url: '400x' }}" 
+                  <img src="{{ section.settings.hero_image | image_url: '400x' }}" 
                        alt="{{ section.settings.hero_image.alt | default: 'Zen Ring - Bague connectée Bluetooth' }}" 
                        class="product-image">
                 {%- else -%}
