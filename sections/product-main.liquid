@@ -88,71 +88,109 @@
                     {{ product.description | truncatewords: 50 }}
                 </div>
 
-                <!-- Product Form avec variant-selects pour Shopify 2.0 (sans sélecteur de couleur) -->
-                <variant-selects class="no-js-hidden" data-section="{{ section.id }}" data-url="{{ product.url }}">
-                  {%- form 'product', product, id: 'AddToCartForm', class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
-                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <!-- Formulaire d'achat Shopify avec toutes les fonctionnalités Dawn -->
+                <product-form class="product-form" data-section-id="{{ section.id }}">
+                  {%- form 'product', product, id: 'product-form-{{ section.id }}', class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                    <!-- ID de la variante sélectionnée -->
+                    <input type="hidden" name="id" value="{{ current_variant.id }}" class="product-variant-id" disabled>
 
-                    <!-- Options de variantes (sans couleur) -->
-                    <div class="product-options">
-                        {%- unless product.has_only_default_variant -%}
-                          {%- for option in product.options_with_values -%}
-                            {%- assign option_name_lower = option.name | downcase -%}
-                            {%- unless option_name_lower contains 'color' or option_name_lower contains 'couleur' -%}
-                              <div class="product-form__input product-form__input--dropdown">
-                                <label class="form__label" for="Option-{{ option.position }}">
-                                  {{ option.name }}
-                                </label>
-                                <div class="select">
-                                  <select name="options[{{ option.name | escape }}]" 
-                                          id="Option-{{ option.position }}" 
-                                          class="select__select">
-                                    {%- for value in option.values -%}
-                                      <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>
-                                        {{ value }}
-                                      </option>
-                                    {%- endfor -%}
-                                  </select>
-                                </div>
-                              </div>
-                            {%- endunless -%}
-                          {%- endfor -%}
-                        {%- endunless -%}
+                    <!-- Sélecteur de variantes avec wrapper variant-selects -->
+                    {% unless product.has_only_default_variant %}
+                      <variant-selects 
+                        class="no-js-hidden product-variants" 
+                        data-section="{{ section.id }}" 
+                        data-url="{{ product.url }}"
+                        data-original-section="{{ section.id }}"
+                      >
+                        {% for option in product.options_with_values %}
+                          <fieldset class="js product-form__input" id="product-form-{{ section.id }}-option-{{ option.position }}" data-option-index="{{ option.position }}">
+                            <legend class="form__label">{{ option.name }}:</legend>
+                            {% render 'product-variant-options', product: product, option: option, block: block %}
+                          </fieldset>
+                        {% endfor %}
+                        <script type="application/json" id="product-json-{{ section.id }}">
+                          {{ product.variants | json }}
+                        </script>
+                      </variant-selects>
+                    {% endunless %}
 
-                        {%- if section.settings.show_quantity_selector != false -%}
-                          <div class="quantity-option">
-                              <label class="form__label" for="Quantity-{{ section.id }}">{{ section.settings.quantity_label | default: 'Quantité :' }}</label>
-                              <div class="quantity-controls">
-                                  <button class="qty-btn" type="button" onclick="changeQuantity(-1, '{{ section.id }}')">-</button>
-                                  <input type="number" name="quantity" id="Quantity-{{ section.id }}" min="1" max="10" value="1" class="quantity__input">
-                                  <button class="qty-btn" type="button" onclick="changeQuantity(1, '{{ section.id }}')">+</button>
-                              </div>
-                          </div>
-                        {%- endif -%}
-                    </div>
+                    <!-- Sélecteur de quantité -->
+                    {%- if section.settings.show_quantity_selector != false -%}
+                      <div class="product-form__input product-form__quantity quantity-selector">
+                        <label class="form__label" for="Quantity-{{ section.id }}">{{ section.settings.quantity_label | default: 'Quantité' }}</label>
+                        <quantity-input class="quantity" data-url="{{ product.url }}" data-section="{{ section.id }}">
+                          <button class="quantity__button no-js-hidden qty-minus" name="minus" type="button">
+                            <span class="visually-hidden">{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}</span>
+                            {% render 'icon-minus' %}
+                          </button>
+                          <input 
+                            class="quantity__input" 
+                            type="number" 
+                            name="quantity" 
+                            id="Quantity-{{ section.id }}" 
+                            data-quantity-variant-id="{{ current_variant.id }}"
+                            min="1" 
+                            value="1"
+                            form="product-form-{{ section.id }}"
+                          >
+                          <button class="quantity__button no-js-hidden qty-plus" name="plus" type="button">
+                            <span class="visually-hidden">{{ 'products.product.quantity.increase' | t: product: product.title | escape }}</span>
+                            {% render 'icon-plus' %}
+                          </button>
+                        </quantity-input>
+                      </div>
+                    {%- endif -%}
 
-                    <!-- Bouton Ajouter au panier -->
-                    <button type="submit" 
-                            name="add" 
-                            class="btn-buy btn-add-to-cart"
-                            {%- unless current_variant.available %} disabled{% endunless %}>
+                    <!-- Boutons d'achat -->
+                    <div class="product-form__buttons">
+                      <button 
+                        type="submit" 
+                        name="add" 
+                        id="ProductSubmitButton-{{ section.id }}"
+                        class="product-form__submit button button--primary btn-buy btn-add-to-cart"
+                        {%- if product.selected_or_first_available_variant.available == false -%}disabled{%- endif -%}
+                      >
                         <span>
-                          {%- if current_variant.available -%}
+                          {%- if product.selected_or_first_available_variant.available -%}
                             {{ section.settings.add_to_cart_text | default: 'Ajouter au panier' }}
                           {%- else -%}
                             {{ section.settings.sold_out_text | default: 'Rupture de stock' }}
                           {%- endif -%}
                         </span>
-                    </button>
+                        {%- render 'loading-spinner' -%}
+                      </button>
 
-                    <!-- Boutons d'achat dynamiques (Shopify 2.0) -->
-                    {%- if section.settings.show_dynamic_checkout != false -%}
-                      <div class="dynamic-checkout-section">
-                          {{ form | payment_button }}
+                      <!-- Acheter maintenant -->
+                      {%- if section.settings.show_buy_now_button -%}
+                        <button 
+                          type="submit" 
+                          name="buy_now" 
+                          formaction="/checkout"
+                          class="product-form__buy-now button button--secondary btn-buy-now"
+                          {%- if product.selected_or_first_available_variant.available == false -%}disabled{%- endif -%}
+                        >
+                          {{ section.settings.buy_now_text | default: 'Acheter maintenant' }}
+                        </button>
+                      {%- endif -%}
+
+                      <!-- Checkout dynamique -->
+                      {%- if section.settings.show_dynamic_checkout -%}
+                        {{ form | payment_button }}
+                      {%- endif -%}
+                    </div>
+
+                    {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+                      <div class="product-form__tax-line rte">
+                        {%- if shop.taxes_included -%}
+                          {{ 'products.product.include_taxes' | t }}
+                        {%- endif -%}
+                        {%- if shop.shipping_policy.body != blank -%}
+                          {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                        {%- endif -%}
                       </div>
                     {%- endif -%}
                   {%- endform -%}
-                </variant-selects>
+                </product-form>
 
                 <!-- Fallback pour JS désactivé -->
                 <noscript class="product-form">
@@ -197,35 +235,148 @@
     }
   }
 
-  // Quantity control functions
-  function changeQuantity(delta, sectionId) {
-    const quantityInput = document.getElementById('Quantity-' + sectionId);
-    if (!quantityInput) return;
-    
-    const newQuantity = parseInt(quantityInput.value) + delta;
-    
-    if (newQuantity >= 1 && newQuantity <= 10) {
-        quantityInput.value = newQuantity;
-        
-        // Update dynamic checkout forms quantity if exists
-        const buyNowQuantity = document.querySelector('.dynamic-checkout-section input[name="quantity"]');
-        if (buyNowQuantity) {
-            buyNowQuantity.value = newQuantity;
-        }
+  // Global window properties for Shopify compatibility
+  window.product = {{ product | json }};
+  window.productVariants = {{ product.variants | json }};
+
+  // Product Form Logic (Dawn compatible)
+  class ProductForm extends HTMLElement {
+    constructor() {
+      super();
+      this.form = this.querySelector('form');
+      this.form.querySelector('[name=id]').disabled = false;
+      this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
+      this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
+      this.submitButton = this.querySelector('[type="submit"]');
+    }
+
+    onSubmitHandler(evt) {
+      evt.preventDefault();
+      if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
+
+      this.handleErrorMessage();
+
+      this.submitButton.setAttribute('aria-disabled', true);
+      this.submitButton.classList.add('loading');
+      this.querySelector('.loading__spinner').classList.remove('hidden');
+
+      const config = {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/javascript',
+        },
+        body: new FormData(this.form)
+      };
+
+      if (this.cart) {
+        config.sections = this.cart.getSectionsToRender().map((section) => section.id);
+        config.sections_url = window.location.pathname;
+        config.headers['Content-Type'] = 'application/json';
+        config.body = JSON.stringify({
+          ...Object.fromEntries(new FormData(this.form)),
+          sections: config.sections,
+          sections_url: config.sections_url
+        });
+      }
+
+      fetch(`${routes.cart_add_url}`, config)
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.status) {
+            this.handleErrorMessage(response.description);
+            
+            const soldOutMessage = this.submitButton.querySelector('.sold-out-message');
+            if (!soldOutMessage) return;
+            this.submitButton.setAttribute('aria-disabled', true);
+            this.submitButton.querySelector('span').classList.add('hidden');
+            soldOutMessage.classList.remove('hidden');
+            this.error = true;
+            return;
+          } else if (!this.cart) {
+            window.location = window.routes.cart_url;
+            return;
+          }
+
+          this.error = false;
+          const quickAddModal = this.closest('quick-add-modal');
+          if (quickAddModal) {
+            document.body.addEventListener('modalClosed', () => {
+              setTimeout(() => { this.cart.renderContents(response) });
+            }, { once: true });
+            quickAddModal.hide(true);
+          } else {
+            this.cart.renderContents(response);
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        })
+        .finally(() => {
+          this.submitButton.classList.remove('loading');
+          if (this.cart && this.cart.classList.contains('is-empty')) this.cart.classList.remove('is-empty');
+          if (!this.error) this.submitButton.removeAttribute('aria-disabled');
+          this.querySelector('.loading__spinner').classList.add('hidden');
+        });
+    }
+
+    handleErrorMessage(errorMessage = false) {
+      this.errorMessageWrapper = this.errorMessageWrapper || this.querySelector('.product-form__error-message-wrapper');
+      if (!this.errorMessageWrapper) return;
+      this.errorMessage = this.errorMessage || this.errorMessageWrapper.querySelector('.product-form__error-message');
+
+      this.errorMessageWrapper.toggleAttribute('hidden', !errorMessage);
+
+      if (errorMessage) {
+        this.errorMessage.textContent = errorMessage;
+      }
     }
   }
 
-  // Variant selector compatible avec Shopify 2.0
+  customElements.define('product-form', ProductForm);
+
+  // Quantity Input Logic
+  class QuantityInput extends HTMLElement {
+    constructor() {
+      super();
+      this.input = this.querySelector('input');
+      this.changeEvent = new Event('change', { bubbles: true });
+      this.querySelectorAll('button').forEach(
+        (button) => button.addEventListener('click', this.onButtonClick.bind(this))
+      );
+    }
+
+    onButtonClick(event) {
+      event.preventDefault();
+      const previousValue = this.input.value;
+
+      if (event.target.name === 'plus') {
+        this.input.stepUp();
+      } else {
+        this.input.stepDown();
+      }
+      if (previousValue !== this.input.value) this.input.dispatchEvent(this.changeEvent);
+    }
+  }
+
+  customElements.define('quantity-input', QuantityInput);
+
+  // Variant Selection Logic (Dawn compatible)
   class VariantSelects extends HTMLElement {
     constructor() {
       super();
       this.addEventListener('change', this.onVariantChange);
+      this.updateOptions();
+      this.updateMasterId();
+      this.setAvailability();
     }
 
     onVariantChange() {
       this.updateOptions();
       this.updateMasterId();
       this.toggleAddButton(true, '', false);
+      this.updatePickupAvailability();
+      this.removeErrorMessage();
 
       if (!this.currentVariant) {
         this.toggleAddButton(true, '', true);
@@ -235,11 +386,12 @@
         this.updateURL();
         this.updateVariantInput();
         this.renderProductInfo();
+        this.setAvailability();
       }
     }
 
     updateOptions() {
-      this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
+      this.options = Array.from(this.querySelectorAll('input[type="radio"]:checked'), (input) => input.value);
     }
 
     updateMasterId() {
@@ -254,11 +406,12 @@
       if (!this.currentVariant) return;
       if (!this.currentVariant.featured_media) return;
 
-      // Update main product image
+      const mediaGallery = document.getElementById('MediaGallery-{{ section.id }}');
       const mainImage = document.getElementById('mainProductImage');
+      
       if (mainImage && this.currentVariant.featured_image) {
         mainImage.src = this.currentVariant.featured_image.src;
-        mainImage.alt = this.currentVariant.featured_image.alt || this.currentVariant.name;
+        mainImage.alt = this.currentVariant.featured_image.alt;
       }
     }
 
@@ -268,53 +421,88 @@
     }
 
     updateVariantInput() {
-      const productForms = document.querySelectorAll(`#AddToCartForm, form[data-type="add-to-cart-form"]`);
+      const productForms = document.querySelectorAll(`#product-form-{{ section.id }}, form[data-type="add-to-cart-form"]`);
       productForms.forEach((productForm) => {
         const input = productForm.querySelector('input[name="id"]');
-        if (input) {
-          input.value = this.currentVariant.id;
-          input.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      });
-
-      // Update dynamic checkout forms too
-      const dynamicForms = document.querySelectorAll('.dynamic-checkout-section input[name="id"]');
-      dynamicForms.forEach(input => {
         input.value = this.currentVariant.id;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
       });
+    }
+
+    updatePickupAvailability() {
+      const pickUpAvailability = document.querySelector('pickup-availability');
+      if (!pickUpAvailability) return;
+
+      if (this.currentVariant && this.currentVariant.available) {
+        pickUpAvailability.fetchAvailability(this.currentVariant.id);
+      } else {
+        pickUpAvailability.removeAttribute('available');
+        pickUpAvailability.innerHTML = '';
+      }
+    }
+
+    removeErrorMessage() {
+      const section = this.closest('section');
+      if (!section) return;
+
+      const productForm = section.querySelector('product-form');
+      if (productForm) productForm.handleErrorMessage();
     }
 
     renderProductInfo() {
-      if (!this.currentVariant) return;
-      
       const requestedVariantId = this.currentVariant.id;
       const sectionId = this.dataset.section;
 
-      // Update price directly from variant data
-      const priceElement = document.getElementById(`price-${sectionId}`);
-      if (priceElement && this.currentVariant.price) {
-        const formattedPrice = new Intl.NumberFormat('fr-FR', {
-          style: 'currency',
-          currency: 'EUR'
-        }).format(this.currentVariant.price / 100);
-        priceElement.textContent = formattedPrice;
-      }
+      fetch(`${this.dataset.url}?variant=${requestedVariantId}&section_id=${this.dataset.originalSection}`)
+        .then((response) => response.text())
+        .then((responseText) => {
+          if (this.currentVariant.id !== requestedVariantId) return;
 
-      // Update compare at price if exists
-      const oldPriceElement = document.querySelector('.old-price-large');
-      if (oldPriceElement && this.currentVariant.compare_at_price) {
-        const formattedComparePrice = new Intl.NumberFormat('fr-FR', {
-          style: 'currency',
-          currency: 'EUR'
-        }).format(this.currentVariant.compare_at_price / 100);
-        oldPriceElement.textContent = formattedComparePrice;
-      }
+          const html = new DOMParser().parseFromString(responseText, 'text/html');
+          const destination = document.getElementById(`price-${sectionId}`);
+          const source = html.getElementById(`price-${sectionId}`);
 
-      this.toggleAddButton(!this.currentVariant.available, 'Rupture de stock');
+          if (source && destination) destination.innerHTML = source.innerHTML;
+
+          const price = document.getElementById(`price-${sectionId}`);
+          if (price) price.classList.remove('visibility-hidden');
+          
+          this.toggleAddButton(
+            !this.currentVariant.available,
+            this.currentVariant.available ? '' : window.variantStrings.soldOut
+          );
+        });
+    }
+
+    setAvailability() {
+      this.querySelectorAll('fieldset').forEach((fieldset) => {
+        const optionInputs = [...fieldset.querySelectorAll('input[type="radio"]')];
+        const optionName = fieldset.querySelector('legend').textContent.trim();
+        
+        optionInputs.forEach((input, index) => {
+          const optionValue = input.value;
+          const variantOption = `option${fieldset.dataset.optionIndex || (index + 1)}`;
+
+          const availableVariants = this.getVariantData().filter((variant) => {
+            return this.options.every((selectedOption, selectedOptionIndex) => {
+              if (selectedOptionIndex === index) return true;
+              const variantOptionName = `option${selectedOptionIndex + 1}`;
+              return variant[variantOptionName] === selectedOption;
+            });
+          });
+
+          const inputWrapper = input.closest('label') || input.parentElement;
+          if (availableVariants.length === 0) {
+            inputWrapper.classList.add('disabled');
+          } else {
+            inputWrapper.classList.remove('disabled');
+          }
+        });
+      });
     }
 
     toggleAddButton(disable = true, text, modifyClass = true) {
-      const productForm = document.getElementById('AddToCartForm');
+      const productForm = document.getElementById(`product-form-${this.dataset.section}`);
       if (!productForm) return;
 
       const addButton = productForm.querySelector('[name="add"]');
@@ -326,38 +514,53 @@
         if (text) addButtonText.textContent = text;
       } else {
         addButton.removeAttribute('disabled');
-        addButtonText.textContent = 'Ajouter au panier';
+        addButtonText.textContent = window.variantStrings.addToCart || 'Ajouter au panier';
       }
     }
 
     setUnavailable() {
-      const addButton = document.querySelector('#AddToCartForm [name="add"]');
-      const addButtonText = document.querySelector('#AddToCartForm [name="add"] > span');
+      const button = document.getElementById(`product-form-${this.dataset.section}`);
+      const addButton = button.querySelector('[name="add"]');
+      const addButtonText = button.querySelector('[name="add"] > span');
       const price = document.getElementById(`price-${this.dataset.section}`);
-      
-      if (addButton && addButtonText) {
-        addButtonText.textContent = 'Non disponible';
-        addButton.setAttribute('disabled', 'disabled');
-      }
+      if (!addButton) return;
+
+      addButtonText.textContent = window.variantStrings.unavailable || 'Non disponible';
       if (price) price.classList.add('visibility-hidden');
     }
 
     getVariantData() {
-      this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+      this.variantData = this.variantData || JSON.parse(document.getElementById(`product-json-${this.dataset.section}`).textContent);
       return this.variantData;
     }
   }
 
-  // Register custom element
   customElements.define('variant-selects', VariantSelects);
+
+  // Cart routes for Shopify
+  window.routes = {
+    cart_add_url: '/cart/add',
+    cart_change_url: '/cart/change',
+    cart_update_url: '/cart/update',
+    cart_url: '/cart',
+    predictive_search_url: '/search/suggest'
+  };
+
+  // Localization strings
+  window.variantStrings = {
+    addToCart: '{{ section.settings.add_to_cart_text | default: "Ajouter au panier" | escape }}',
+    soldOut: '{{ section.settings.sold_out_text | default: "Rupture de stock" | escape }}',
+    unavailable: 'Non disponible',
+    unitPrice: 'Prix unitaire'
+  };
 
   // Initialize when DOM is loaded
   document.addEventListener('DOMContentLoaded', function() {
-    // Initialize variant selects if exists
     const variantSelects = document.querySelector('variant-selects');
     if (variantSelects) {
-      // Trigger initial update
-      variantSelects.dispatchEvent(new Event('change'));
+      variantSelects.updateOptions();
+      variantSelects.updateMasterId();
+      variantSelects.setAvailability();
     }
   });
 </script>
@@ -417,6 +620,18 @@
       "id": "sold_out_text",
       "default": "Rupture de stock",
       "label": "Texte rupture de stock"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_buy_now_button",
+      "default": false,
+      "label": "Afficher le bouton Acheter maintenant"
+    },
+    {
+      "type": "text",
+      "id": "buy_now_text",
+      "default": "Acheter maintenant",
+      "label": "Texte du bouton Acheter maintenant"
     }
   ],
   "presets": [

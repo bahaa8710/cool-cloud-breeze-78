@@ -1,0 +1,41 @@
+{%- liquid
+  assign product_form_id = 'product-form-' | append: section.id
+-%}
+
+{%- for value in option.values -%}
+  {%- liquid
+    assign option_disabled = true
+    for variant in product.variants
+      case option.position
+        when 1
+          if variant.option1 == value and variant.available
+            assign option_disabled = false
+          endif
+        when 2
+          if variant.option1 == product.selected_or_first_available_variant.option1 and variant.option2 == value and variant.available
+            assign option_disabled = false
+          endif
+        when 3
+          if variant.option1 == product.selected_or_first_available_variant.option1 and variant.option2 == product.selected_or_first_available_variant.option2 and variant.option3 == value and variant.available
+            assign option_disabled = false
+          endif
+      endcase
+    endfor
+  -%}
+
+  <input
+    type="radio"
+    id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+    name="{{ option.name }}"
+    value="{{ value | escape }}"
+    form="{{ product_form_id }}"
+    {% if option.selected_value == value %}checked{% endif %}
+    {% if option_disabled %}class="disabled"{% endif %}
+  >
+  <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
+    {{ value }}
+    {%- if option_disabled -%}
+      <span class="visually-hidden">({{ 'products.product.variant_sold_out_or_unavailable' | t }})</span>
+    {%- endif -%}
+  </label>
+{%- endfor -%}
