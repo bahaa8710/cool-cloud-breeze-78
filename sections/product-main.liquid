@@ -160,18 +160,17 @@
                         {%- render 'loading-spinner' -%}
                       </button>
 
-                      <!-- Acheter maintenant -->
-                      {%- if section.settings.show_buy_now_button -%}
-                        <button 
-                          type="submit" 
-                          name="buy_now" 
-                          formaction="/checkout"
-                          class="product-form__buy-now button button--secondary btn-buy-now"
-                          {%- if product.selected_or_first_available_variant.available == false -%}disabled{%- endif -%}
-                        >
-                          {{ section.settings.buy_now_text | default: 'Acheter maintenant' }}
-                        </button>
-                      {%- endif -%}
+              <!-- Acheter maintenant -->
+              {%- if section.settings.show_buy_now_button -%}
+                <button 
+                  type="button" 
+                  name="buy_now" 
+                  class="product-form__buy-now button button--secondary btn-buy-now"
+                  {%- if product.selected_or_first_available_variant.available == false -%}disabled{%- endif -%}
+                >
+                  {{ section.settings.buy_now_text | default: 'Acheter maintenant' }}
+                </button>
+              {%- endif -%}
 
                       <!-- Checkout dynamique -->
                       {%- if section.settings.show_dynamic_checkout -%}
@@ -192,7 +191,7 @@
                   {%- endform -%}
                 </product-form>
 
-                <!-- Fallback pour JS désactivé -->
+                 <!-- Fallback pour JS désactivé -->
                 <noscript class="product-form">
                   {%- form 'product', product, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
                     <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
@@ -207,6 +206,9 @@
                     </button>
                   {%- endform -%}
                 </noscript>
+
+<!-- Chargement du script Buy Now -->
+{{ 'product-buy-now.js' | asset_url | script_tag }}
             </div>
         </div>
     </div>
