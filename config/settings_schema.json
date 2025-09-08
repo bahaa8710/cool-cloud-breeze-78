@@ -1,75 +1,60 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Zen Ring",
+    "theme_name": "Custom Theme",
     "theme_version": "1.0.0",
-    "theme_author": "Zen Ring",
-    "theme_documentation_url": "https://help.shopify.com/",
-    "theme_support_url": "https://support.shopify.com/"
-  },
-  {
-    "name": "Logo",
-    "settings": [
-      {
-        "type": "image_picker",
-        "id": "logo",
-        "label": "Logo image"
-      },
-      {
-        "type": "range",
-        "id": "logo_max_width",
-        "min": 50,
-        "max": 250,
-        "step": 10,
-        "unit": "px",
-        "label": "Custom logo width",
-        "default": 100
-      }
-    ]
+    "theme_author": "Custom Developer",
+    "theme_documentation_url": "",
+    "theme_support_url": ""
   },
   {
     "name": "Colors",
     "settings": [
       {
         "type": "header",
-        "content": "Primary colors"
+        "content": "General"
+      },
+      {
+        "type": "color",
+        "id": "colors_solid_button_labels",
+        "default": "#FFFFFF",
+        "label": "Solid button label"
       },
       {
         "type": "color",
         "id": "colors_accent_1",
-        "default": "#87CEEB",
-        "label": "Sky Blue",
-        "info": "Used for buttons and accents"
+        "default": "#121212",
+        "label": "Accent 1"
       },
       {
         "type": "color",
         "id": "colors_accent_2",
-        "default": "#E6E6FA",
-        "label": "Lavender",
-        "info": "Used for secondary elements"
+        "default": "#334FB4",
+        "label": "Accent 2"
       },
       {
         "type": "color",
-        "id": "colors_accent_3",
-        "default": "#FFB6C1",
-        "label": "Pastel Pink",
-        "info": "Used for highlights"
+        "id": "colors_text",
+        "default": "#121212",
+        "label": "Text"
       },
       {
-        "type": "header",
-        "content": "Background colors"
+        "type": "color",
+        "id": "colors_outline_button_labels",
+        "default": "#121212",
+        "label": "Outline button label"
       },
       {
         "type": "color",
         "id": "colors_background_1",
-        "default": "#F8FAFC",
-        "label": "Cloud White"
+        "default": "#FFFFFF",
+        "label": "Background 1"
       },
       {
         "type": "color",
         "id": "colors_background_2",
-        "default": "#F0FFFF",
-        "label": "Mint Fresh"
+        "default": "#F3F3F3",
+        "label": "Background 2"
       }
     ]
   },
@@ -83,9 +68,9 @@
       {
         "type": "font_picker",
         "id": "type_header_font",
-        "default": "inter_n4",
+        "default": "assistant_n4",
         "label": "Font",
-        "info": "Inter font for modern look"
+        "info": "Selecting a different font can affect the speed of your store. [Learn more about system fonts.](https://help.shopify.com/en/manual/online-store/os/store-speed/improving-speed#fonts)"
       },
       {
         "type": "range",
@@ -99,20 +84,20 @@
       },
       {
         "type": "header",
-        "content": "Body text"
+        "content": "Body"
       },
       {
         "type": "font_picker",
         "id": "type_body_font",
-        "default": "inter_n4",
+        "default": "assistant_n4",
         "label": "Font",
-        "info": "Inter font for readability"
+        "info": "Selecting a different font can affect the speed of your store. [Learn more about system fonts.](https://help.shopify.com/en/manual/online-store/os/store-speed/improving-speed#fonts)"
       },
       {
         "type": "range",
         "id": "body_scale",
         "min": 100,
-        "max": 120,
+        "max": 130,
         "step": 5,
         "unit": "%",
         "label": "Body scale",
@@ -121,8 +106,274 @@
     ]
   },
   {
-    "name": "Product cards",
+    "name": "Layout",
     "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1000,
+        "max": 1600,
+        "step": 10,
+        "default": 1200,
+        "unit": "px",
+        "label": "Page width"
+      },
+      {
+        "type": "range",
+        "id": "spacing_sections",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Spacing between sections",
+        "default": 0
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Button style"
+      },
+      {
+        "type": "range",
+        "id": "buttons_border_thickness",
+        "min": 0,
+        "max": 5,
+        "step": 0.1,
+        "unit": "px",
+        "label": "Border thickness",
+        "default": 1
+      },
+      {
+        "type": "range",
+        "id": "buttons_border_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Border opacity",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "buttons_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Corner radius",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "buttons_shadow_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Shadow opacity",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "buttons_shadow_horizontal_offset",
+        "min": -12,
+        "max": 12,
+        "step": 2,
+        "unit": "px",
+        "label": "Horizontal shadow offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "buttons_shadow_vertical_offset",
+        "min": -12,
+        "max": 12,
+        "step": 2,
+        "unit": "px",
+        "label": "Vertical shadow offset",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "buttons_shadow_blur_radius",
+        "min": 0,
+        "max": 20,
+        "step": 5,
+        "unit": "px",
+        "label": "Shadow blur radius",
+        "default": 10
+      }
+    ]
+  },
+  {
+    "name": "Variant pills",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Variant pills"
+      },
+      {
+        "type": "range",
+        "id": "variant_pills_border_thickness",
+        "min": 0,
+        "max": 5,
+        "step": 0.1,
+        "unit": "px",
+        "label": "Border thickness",
+        "default": 1
+      },
+      {
+        "type": "range",
+        "id": "variant_pills_border_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Border opacity",
+        "default": 55
+      },
+      {
+        "type": "range",
+        "id": "variant_pills_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Corner radius",
+        "default": 40
+      },
+      {
+        "type": "range",
+        "id": "variant_pills_shadow_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Shadow opacity",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "variant_pills_shadow_horizontal_offset",
+        "min": -12,
+        "max": 12,
+        "step": 2,
+        "unit": "px",
+        "label": "Horizontal shadow offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "variant_pills_shadow_vertical_offset",
+        "min": -12,
+        "max": 12,
+        "step": 2,
+        "unit": "px",
+        "label": "Vertical shadow offset",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "variant_pills_shadow_blur_radius",
+        "min": 0,
+        "max": 20,
+        "step": 5,
+        "unit": "px",
+        "label": "Shadow blur radius",
+        "default": 5
+      }
+    ]
+  },
+  {
+    "name": "Inputs",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Input fields"
+      },
+      {
+        "type": "range",
+        "id": "inputs_border_thickness",
+        "min": 0,
+        "max": 5,
+        "step": 0.1,
+        "unit": "px",
+        "label": "Border thickness",
+        "default": 1
+      },
+      {
+        "type": "range",
+        "id": "inputs_border_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Border opacity",
+        "default": 55
+      },
+      {
+        "type": "range",
+        "id": "inputs_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Corner radius",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "inputs_shadow_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Shadow opacity",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "inputs_shadow_horizontal_offset",
+        "min": -12,
+        "max": 12,
+        "step": 2,
+        "unit": "px",
+        "label": "Horizontal shadow offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "inputs_shadow_vertical_offset",
+        "min": -12,
+        "max": 12,
+        "step": 2,
+        "unit": "px",
+        "label": "Vertical shadow offset",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "inputs_shadow_blur_radius",
+        "min": 0,
+        "max": 20,
+        "step": 5,
+        "unit": "px",
+        "label": "Shadow blur radius",
+        "default": 5
+      }
+    ]
+  },
+  {
+    "name": "Cards",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Card style"
+      },
       {
         "type": "select",
         "id": "card_style",
@@ -136,137 +387,169 @@
             "label": "Card"
           }
         ],
-        "default": "card",
+        "default": "standard",
         "label": "Style"
       },
       {
-        "type": "checkbox",
-        "id": "show_secondary_image",
-        "default": false,
-        "label": "Show second product image on hover"
+        "type": "range",
+        "id": "card_image_padding",
+        "min": 0,
+        "max": 20,
+        "step": 2,
+        "unit": "px",
+        "label": "Image padding",
+        "default": 0
       },
       {
-        "type": "checkbox",
-        "id": "show_vendor",
-        "default": false,
-        "label": "Show vendor"
+        "type": "select",
+        "id": "card_text_alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left",
+        "label": "Text alignment"
       },
       {
-        "type": "checkbox",
-        "id": "show_rating",
-        "default": false,
-        "label": "Show product rating",
-        "info": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/page-types#product-grid-section-settings)"
+        "type": "select",
+        "id": "card_color_scheme",
+        "options": [
+          {
+            "value": "accent-1",
+            "label": "Accent 1"
+          },
+          {
+            "value": "accent-2",
+            "label": "Accent 2"
+          },
+          {
+            "value": "background-1",
+            "label": "Background 1"
+          },
+          {
+            "value": "background-2",
+            "label": "Background 2"
+          },
+          {
+            "value": "inverse",
+            "label": "Inverse"
+          }
+        ],
+        "default": "background-1",
+        "label": "Color scheme"
       }
     ]
   },
   {
-    "name": "Cart",
+    "name": "Badge",
     "settings": [
       {
         "type": "select",
-        "id": "cart_type",
+        "id": "badge_position",
         "options": [
           {
-            "value": "notification",
-            "label": "Notification"
+            "value": "bottom left",
+            "label": "Bottom left"
           },
           {
-            "value": "drawer",
-            "label": "Drawer"
+            "value": "bottom right",
+            "label": "Bottom right"
           },
           {
-            "value": "page",
-            "label": "Page"
+            "value": "top left",
+            "label": "Top left"
+          },
+          {
+            "value": "top right",
+            "label": "Top right"
           }
         ],
-        "default": "notification",
-        "label": "Cart type"
+        "default": "bottom left",
+        "label": "Position"
       },
       {
-        "type": "checkbox",
-        "id": "show_cart_note",
-        "default": false,
-        "label": "Enable cart notes"
+        "type": "select",
+        "id": "badge_corner_radius",
+        "options": [
+          {
+            "value": "0",
+            "label": "Sharp"
+          },
+          {
+            "value": "5",
+            "label": "Rounded"
+          },
+          {
+            "value": "50",
+            "label": "Circular"
+          }
+        ],
+        "default": "0",
+        "label": "Corner radius"
       }
     ]
   },
   {
-    "name": "Checkout",
+    "name": "Brand information",
     "settings": [
       {
         "type": "header",
-        "content": "Dynamic checkout"
-      },
-      {
-        "type": "checkbox",
-        "id": "show_dynamic_checkout",
-        "default": true,
-        "label": "Show dynamic checkout buttons",
-        "info": "Customers can check out directly using a familiar payment method. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)"
-      }
-    ]
-  },
-  {
-    "name": "Social media",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Social accounts"
+        "content": "Social media"
       },
       {
         "type": "text",
         "id": "social_twitter_link",
-        "label": "Twitter",
-        "info": "https://twitter.com/shopify"
+        "label": "Twitter"
       },
       {
         "type": "text",
         "id": "social_facebook_link",
-        "label": "Facebook",
-        "info": "https://facebook.com/shopify"
+        "label": "Facebook"
       },
       {
         "type": "text",
         "id": "social_pinterest_link",
-        "label": "Pinterest",
-        "info": "https://pinterest.com/shopify"
+        "label": "Pinterest"
       },
       {
         "type": "text",
         "id": "social_instagram_link",
-        "label": "Instagram",
-        "info": "https://instagram.com/shopify"
+        "label": "Instagram"
       },
       {
         "type": "text",
         "id": "social_tiktok_link",
-        "label": "TikTok",
-        "info": "https://tiktok.com/@shopify"
+        "label": "TikTok"
       },
       {
         "type": "text",
         "id": "social_tumblr_link",
-        "label": "Tumblr",
-        "info": "https://shopify.tumblr.com"
+        "label": "Tumblr"
       },
       {
         "type": "text",
         "id": "social_snapchat_link",
-        "label": "Snapchat",
-        "info": "https://snapchat.com/add/shopify"
+        "label": "Snapchat"
       },
       {
         "type": "text",
         "id": "social_youtube_link",
-        "label": "YouTube",
-        "info": "https://youtube.com/shopify"
+        "label": "YouTube"
       },
       {
         "type": "text",
         "id": "social_vimeo_link",
-        "label": "Vimeo",
-        "info": "https://vimeo.com/shopify"
+        "label": "Vimeo"
       }
     ]
   },
@@ -275,13 +558,25 @@
     "settings": [
       {
         "type": "header",
-        "content": "Search"
+        "content": "Predictive search"
       },
       {
         "type": "checkbox",
         "id": "predictive_search_enabled",
         "default": true,
         "label": "Enable predictive search"
+      },
+      {
+        "type": "checkbox",
+        "id": "predictive_search_show_vendor",
+        "default": false,
+        "label": "Show vendor"
+      },
+      {
+        "type": "checkbox",
+        "id": "predictive_search_show_price",
+        "default": true,
+        "label": "Show price"
       }
     ]
   },
@@ -299,8 +594,8 @@
       {
         "type": "checkbox",
         "id": "currency_code_enabled",
-        "default": true,
-        "label": "Show currency codes"
+        "label": "Show currency codes",
+        "default": true
       }
     ]
   }
