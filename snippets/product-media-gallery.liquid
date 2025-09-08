@@ -30,7 +30,7 @@
   assign media_count = product.media.size
 -%}
 
-<div class="product-media-gallery" data-section="{{ section.id }}">
+<product-media-gallery class="product-media-gallery" data-section="{{ section.id }}">
   <div class="product-media-gallery__main">
     <div class="product-media-gallery__slider" data-slider>
       {%- for media in product.media -%}
@@ -190,7 +190,7 @@
       {%- endfor -%}
     </div>
   {%- endif -%}
-</div>
+</product-media-gallery>
 
 <!-- Modal pour le zoom d'image -->
 {%- if enable_image_zoom -%}

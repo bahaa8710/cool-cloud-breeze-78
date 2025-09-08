@@ -51,6 +51,13 @@ class VariantRadios extends HTMLElement {
     if (mediaGallery && this.currentVariant.featured_media) {
       mediaGallery.setActiveMedia(this.currentVariant.featured_media.id);
     }
+    
+    // Fallback pour les images principales
+    const mainImage = document.getElementById('mainProductImage');
+    if (mainImage && this.currentVariant.featured_image) {
+      mainImage.src = this.currentVariant.featured_image.src;
+      mainImage.alt = this.currentVariant.featured_image.alt;
+    }
   }
 
   updateURL() {
