@@ -1,0 +1,20 @@
+{
+  "name": "Produit",
+  "sections": {
+    "main": {
+      "type": "product-main",
+      "settings": {
+        "show_dynamic_checkout": true,
+        "show_quantity_selector": true
+      }
+    },
+    "tabs": {
+      "type": "product-tabs",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "tabs"
+  ]
+}
