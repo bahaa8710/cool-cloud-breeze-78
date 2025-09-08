@@ -173,12 +173,3 @@ class ProductMediaGallery extends HTMLElement {
 
 // Enregistrement du custom element
 customElements.define('product-media-gallery', ProductMediaGallery);
-
-// Initialisation globale
-document.addEventListener('DOMContentLoaded', function() {
-  // Initialiser les galeries médias
-  const mediaGalleries = document.querySelectorAll('product-media-gallery');
-  mediaGalleries.forEach(gallery => {
-    new ProductMediaGallery();
-  });
-});

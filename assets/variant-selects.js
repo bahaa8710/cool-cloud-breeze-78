@@ -188,11 +188,3 @@ class VariantSelects extends HTMLElement {
 
 // Enregistrement du custom element
 customElements.define('variant-selects', VariantSelects);
-
-// Initialisation
-document.addEventListener('DOMContentLoaded', function() {
-  const variantSelects = document.querySelectorAll('variant-selects');
-  variantSelects.forEach(selects => {
-    new VariantSelects();
-  });
-});

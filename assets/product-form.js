@@ -123,16 +123,3 @@ class QuantityInput extends HTMLElement {
 // Enregistrement des custom elements
 customElements.define('product-form', ProductForm);
 customElements.define('quantity-input', QuantityInput);
-
-// Initialisation
-document.addEventListener('DOMContentLoaded', function() {
-  const productForms = document.querySelectorAll('product-form');
-  productForms.forEach(form => {
-    new ProductForm();
-  });
-  
-  const quantityInputs = document.querySelectorAll('quantity-input');
-  quantityInputs.forEach(input => {
-    new QuantityInput();
-  });
-});

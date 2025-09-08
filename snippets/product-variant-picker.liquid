@@ -11,7 +11,7 @@
 {% endcomment %}
 
 {%- unless product.has_only_default_variant -%}
-  <variant-selects 
+  <variant-radios 
     class="no-js-hidden" 
     data-section="{{ section.id }}" 
     data-url="{{ product.url }}" 
@@ -82,7 +82,7 @@
       </fieldset>
     {%- endfor -%}
     
-  </variant-selects>
+  </variant-radios>
 
   {%- comment -%} Alternative pour JS désactivé {%- endcomment -%}
   <noscript class="product-form__noscript-wrapper-{{ section.id }}">

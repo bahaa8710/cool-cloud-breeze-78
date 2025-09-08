@@ -194,11 +194,3 @@ class VariantRadios extends HTMLElement {
 
 // Enregistrement du custom element
 customElements.define('variant-radios', VariantRadios);
-
-// Initialisation
-document.addEventListener('DOMContentLoaded', function() {
-  const variantRadios = document.querySelectorAll('variant-radios');
-  variantRadios.forEach(radios => {
-    new VariantRadios();
-  });
-});

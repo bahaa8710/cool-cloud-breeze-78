@@ -6,7 +6,13 @@
 class ProductBuyNow extends HTMLElement {
   constructor() {
     super();
+    this._bound = false;
+  }
+
+  connectedCallback() {
+    if (this._bound) return;
     this.bindEvents();
+    this._bound = true;
   }
 
   bindEvents() {
@@ -111,16 +117,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const buyNowButtons = document.querySelectorAll('[name="buy_now"]');
   buyNowButtons.forEach(button => {
     if (!button.closest('product-buy-now')) {
-      // Créer un wrapper si nécessaire
       const wrapper = document.createElement('product-buy-now');
       button.parentNode.insertBefore(wrapper, button);
       wrapper.appendChild(button);
+      // connectedCallback s'exécutera automatiquement à la connexion
     }
-  });
-  
-  // Initialiser les éléments Buy Now
-  const buyNowElements = document.querySelectorAll('product-buy-now');
-  buyNowElements.forEach(element => {
-    new ProductBuyNow();
   });
 });
