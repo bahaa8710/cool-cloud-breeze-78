@@ -104,8 +104,20 @@ class ProductBuyNow extends HTMLElement {
 // Enregistrement du custom element
 customElements.define('product-buy-now', ProductBuyNow);
 
-// Initialisation
+// Initialisation globale pour les boutons Buy Now
 document.addEventListener('DOMContentLoaded', function() {
+  // Gérer les boutons Buy Now existants
+  const buyNowButtons = document.querySelectorAll('[name="buy_now"]');
+  buyNowButtons.forEach(button => {
+    if (!button.closest('product-buy-now')) {
+      // Créer un wrapper si nécessaire
+      const wrapper = document.createElement('product-buy-now');
+      button.parentNode.insertBefore(wrapper, button);
+      wrapper.appendChild(button);
+    }
+  });
+  
+  // Initialiser les éléments Buy Now
   const buyNowElements = document.querySelectorAll('product-buy-now');
   buyNowElements.forEach(element => {
     new ProductBuyNow();

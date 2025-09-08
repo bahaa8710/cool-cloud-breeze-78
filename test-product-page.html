@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page Produit - Thème Shopify</title>
+    <link rel="stylesheet" href="assets/component-product-form.css">
+    <link rel="stylesheet" href="assets/component-product-variant-picker.css">
+    <link rel="stylesheet" href="assets/component-product-media-gallery.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+        .product-images {
+            position: relative;
+        }
+        .product-info h1 {
+            font-size: 2.5rem;
+            margin: 0 0 20px 0;
+            color: #333;
+        }
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .stars {
+            display: flex;
+            gap: 2px;
+        }
+        .rating-text {
+            color: #666;
+            font-size: 14px;
+        }
+        .price-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .price-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .old-price-large {
+            font-size: 1.2rem;
+            color: #999;
+            text-decoration: line-through;
+        }
+        .new-price-large {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .savings {
+            color: #28a745;
+            font-weight: 500;
+            margin: 0;
+        }
+        .shipping-free {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .product-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .product-badges {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #28a745;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+        }
+        .urgency-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #dc3545;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .urgency-dot {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+        }
+        @media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="product-grid">
+            <!-- Product Media Gallery -->
+            <div class="product-images">
+                <product-media-gallery class="product-media-gallery" data-section="test-section">
+                    <div class="product-media-gallery__main">
+                        <div class="product-media-gallery__slider" data-slider>
+                            <div class="product-media-gallery__slide product-media-gallery__slide--active" 
+                                 data-media-id="1" 
+                                 data-media-type="image"
+                                 data-media-position="0">
+                                <div class="product-media-gallery__image-wrapper">
+                                    <img
+                                        src="https://via.placeholder.com/600x600/4285f4/ffffff?text=Image+1"
+                                        alt="Produit image 1"
+                                        class="product-media-gallery__image"
+                                        loading="lazy"
+                                        width="600"
+                                        height="600"
+                                        data-zoom="https://via.placeholder.com/1200x1200/4285f4/ffffff?text=Image+1+Zoom"
+                                    >
+                                    <button class="product-media-gallery__zoom-btn" data-zoom-trigger aria-label="Zoom image">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="11" cy="11" r="8"/>
+                                            <path d="m21 21-4.35-4.35"/>
+                                            <line x1="11" y1="8" x2="11" y2="14"/>
+                                            <line x1="8" y1="11" x2="14" y2="11"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="product-media-gallery__slide" 
+                                 data-media-id="2" 
+                                 data-media-type="image"
+                                 data-media-position="1">
+                                <div class="product-media-gallery__image-wrapper">
+                                    <img
+                                        src="https://via.placeholder.com/600x600/ea4c89/ffffff?text=Image+2"
+                                        alt="Produit image 2"
+                                        class="product-media-gallery__image"
+                                        loading="lazy"
+                                        width="600"
+                                        height="600"
+                                        data-zoom="https://via.placeholder.com/1200x1200/ea4c89/ffffff?text=Image+2+Zoom"
+                                    >
+                                    <button class="product-media-gallery__zoom-btn" data-zoom-trigger aria-label="Zoom image">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="11" cy="11" r="8"/>
+                                            <path d="m21 21-4.35-4.35"/>
+                                            <line x1="11" y1="8" x2="11" y2="14"/>
+                                            <line x1="8" y1="11" x2="14" y2="11"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-media-gallery__navigation">
+                            <button class="product-media-gallery__nav-btn product-media-gallery__nav-btn--prev" data-slider-prev aria-label="Image précédente">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="15,18 9,12 15,6"/>
+                                </svg>
+                            </button>
+                            <button class="product-media-gallery__nav-btn product-media-gallery__nav-btn--next" data-slider-next aria-label="Image suivante">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9,18 15,12 9,6"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-media-gallery__thumbnails">
+                        <button class="product-media-gallery__thumbnail product-media-gallery__thumbnail--active" 
+                                data-media-id="1"
+                                data-media-position="0"
+                                aria-label="Voir image 1">
+                            <img
+                                src="https://via.placeholder.com/200x200/4285f4/ffffff?text=1"
+                                alt="Produit image 1"
+                                class="product-media-gallery__thumbnail-image"
+                                loading="lazy"
+                                width="100"
+                                height="100"
+                            >
+                        </button>
+                        <button class="product-media-gallery__thumbnail" 
+                                data-media-id="2"
+                                data-media-position="1"
+                                aria-label="Voir image 2">
+                            <img
+                                src="https://via.placeholder.com/200x200/ea4c89/ffffff?text=2"
+                                alt="Produit image 2"
+                                class="product-media-gallery__thumbnail-image"
+                                loading="lazy"
+                                width="100"
+                                height="100"
+                            >
+                        </button>
+                    </div>
+                </product-media-gallery>
+                
+                <div class="product-badges">
+                    <div class="badge">
+                        <span class="badge-dot"></span>
+                        <span>Nouveau</span>
+                    </div>
+                    <div class="urgency-badge">
+                        <span class="urgency-dot"></span>
+                        <span>-20%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="product-info">
+                <h1>Produit Test - T-Shirt Premium</h1>
+                
+                <div class="rating">
+                    <div class="stars">
+                        <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                    </div>
+                    <span class="rating-text">(4.9/5 - 127 avis)</span>
+                </div>
+
+                <div class="price-card">
+                    <div class="price-info">
+                        <span class="old-price-large">29,99 €</span>
+                        <span class="new-price-large" id="price-test-section">23,99 €</span>
+                    </div>
+                    <p class="savings">Économisez 6,00 € (20%)</p>
+                    <div class="shipping-free">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="3" width="15" height="13"/>
+                            <polygon points="16,6 20,6 23,11 23,16 16,16"/>
+                            <circle cx="5.5" cy="18.5" r="2.5"/>
+                            <circle cx="18.5" cy="18.5" r="2.5"/>
+                        </svg>
+                        Livraison gratuite
+                    </div>
+                </div>
+
+                <div class="product-description">
+                    T-shirt en coton bio de qualité premium. Confortable, durable et respectueux de l'environnement. Parfait pour un usage quotidien ou sportif.
+                </div>
+
+                <!-- Product Form Dawn Structure -->
+                <product-form class="product-form" data-section="test-section">
+                    <div class="product-form__error-message-wrapper" role="alert" hidden>
+                        <svg aria-hidden="true" focusable="false" class="icon icon-error" viewBox="0 0 13 13">
+                            <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+                            <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+                            <path d="m5.87413 3.52832 5.6635 9.5737c.24749.42626.02049.96966-.49134.96966H2.65893c-.51183 0-.73883-.54341-.49134-.96966l5.6635-9.5737a.50033.50033 0 0 1 .87654 0Z" fill="white"/>
+                            <path d="m4.19583 7.00049-.71184 3.8984c-.02951.16234.08112.30135.24885.30135h2.51632c.16773 0 .27836-.13901.24885-.30135L6.80417 7.00049H4.19583Z" fill="#EB001B"/>
+                        </svg>
+                        <span class="product-form__error-message"></span>
+                    </div>
+
+                    <form id="product-form-test-section" class="form" novalidate data-type="add-to-cart-form">
+                        <input type="hidden" name="form_type" value="product">
+                        <input type="hidden" name="utf8" value="✓">
+                        <input type="hidden" name="id" value="123456789" disabled>
+                        
+                        <!-- Script avec données produit pour JavaScript -->
+                        <script type="application/json" id="product-json-test-section">
+                          [
+                            {
+                              "id": 123456789,
+                              "title": "Bleu / S",
+                              "option1": "Bleu",
+                              "option2": "S",
+                              "option3": null,
+                              "options": ["Bleu", "S"],
+                              "price": 2399,
+                              "compare_at_price": 2999,
+                              "available": true,
+                              "featured_media": {
+                                "id": 1,
+                                "alt": "Produit image 1"
+                              },
+                              "featured_image": {
+                                "src": "https://via.placeholder.com/600x600/4285f4/ffffff?text=Image+1",
+                                "alt": "Produit image 1"
+                              }
+                            },
+                            {
+                              "id": 123456790,
+                              "title": "Rose / S",
+                              "option1": "Rose",
+                              "option2": "S",
+                              "option3": null,
+                              "options": ["Rose", "S"],
+                              "price": 2399,
+                              "compare_at_price": 2999,
+                              "available": true,
+                              "featured_media": {
+                                "id": 2,
+                                "alt": "Produit image 2"
+                              },
+                              "featured_image": {
+                                "src": "https://via.placeholder.com/600x600/ea4c89/ffffff?text=Image+2",
+                                "alt": "Produit image 2"
+                              }
+                            }
+                          ]
+                        </script>
+
+                        <!-- Sélecteur de variantes Dawn -->
+                        <variant-selects 
+                            class="no-js-hidden" 
+                            data-section="test-section" 
+                            data-url="/products/test-product" 
+                            data-update-url="true"
+                            data-original-section="test-section"
+                        >
+                            <fieldset class="js product-form__input product-form__input--pill">
+                                <legend class="form__label">Couleur</legend>
+                                
+                                <input
+                                    type="radio"
+                                    id="test-section-1-0"
+                                    name="Couleur"
+                                    value="Bleu"
+                                    form="product-form-test-section"
+                                    checked
+                                    class="variant-picker__radio"
+                                >
+                                <label for="test-section-1-0" class="color-swatch" title="Bleu">
+                                    <span class="color-swatch__color" style="background-color: #4285f4;"></span>
+                                    <span class="visually-hidden">Bleu</span>
+                                </label>
+                                
+                                <input
+                                    type="radio"
+                                    id="test-section-1-1"
+                                    name="Couleur"
+                                    value="Rose"
+                                    form="product-form-test-section"
+                                    class="variant-picker__radio"
+                                >
+                                <label for="test-section-1-1" class="color-swatch" title="Rose">
+                                    <span class="color-swatch__color" style="background-color: #ea4c89;"></span>
+                                    <span class="visually-hidden">Rose</span>
+                                </label>
+                            </fieldset>
+                            
+                            <fieldset class="js product-form__input product-form__input--pill">
+                                <legend class="form__label">Taille</legend>
+                                
+                                <input
+                                    type="radio"
+                                    id="test-section-2-0"
+                                    name="Taille"
+                                    value="S"
+                                    form="product-form-test-section"
+                                    checked
+                                    class="variant-picker__radio"
+                                >
+                                <label for="test-section-2-0" class="variant-pill">
+                                    S
+                                </label>
+                                
+                                <input
+                                    type="radio"
+                                    id="test-section-2-1"
+                                    name="Taille"
+                                    value="M"
+                                    form="product-form-test-section"
+                                    class="variant-picker__radio"
+                                >
+                                <label for="test-section-2-1" class="variant-pill">
+                                    M
+                                </label>
+                                
+                                <input
+                                    type="radio"
+                                    id="test-section-2-2"
+                                    name="Taille"
+                                    value="L"
+                                    form="product-form-test-section"
+                                    class="variant-picker__radio"
+                                >
+                                <label for="test-section-2-2" class="variant-pill">
+                                    L
+                                </label>
+                            </fieldset>
+                        </variant-selects>
+
+                        <!-- Sélecteur de quantité -->
+                        <div class="product-form__input product-form__quantity quantity-selector">
+                            <label class="form__label" for="Quantity-test-section">Quantité</label>
+                            <quantity-input class="quantity quantity-input" data-url="/products/test-product" data-section="test-section">
+                                <button class="quantity__button no-js-hidden qty-minus" name="minus" type="button">
+                                    <span class="visually-hidden">Diminuer la quantité</span>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="5" y1="12" x2="19" y2="12"/>
+                                    </svg>
+                                </button>
+                                <input 
+                                    class="quantity__input" 
+                                    type="number" 
+                                    name="quantity" 
+                                    id="Quantity-test-section" 
+                                    data-quantity-variant-id="123456789"
+                                    min="1" 
+                                    value="1"
+                                    form="product-form-test-section"
+                                >
+                                <button class="quantity__button no-js-hidden qty-plus" name="plus" type="button">
+                                    <span class="visually-hidden">Augmenter la quantité</span>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19"/>
+                                        <line x1="5" y1="12" x2="19" y2="12"/>
+                                    </svg>
+                                </button>
+                            </quantity-input>
+                        </div>
+
+                        <!-- Boutons d'achat -->
+                        <div class="product-form__buttons">
+                            <button 
+                                type="submit" 
+                                name="add" 
+                                id="ProductSubmitButton-test-section"
+                                class="product-form__submit button button--primary btn-buy btn-add-to-cart"
+                            >
+                                <span>Ajouter au panier</span>
+                                <div class="loading__spinner hidden">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="10" cy="10" r="8" stroke-dasharray="50.27" stroke-dashoffset="50.27">
+                                            <animate attributeName="stroke-dasharray" dur="1.5s" values="0 50.27;31.42 18.85;0 50.27" repeatCount="indefinite"/>
+                                            <animate attributeName="stroke-dashoffset" dur="1.5s" values="0;-15.71;-31.42" repeatCount="indefinite"/>
+                                        </circle>
+                                    </svg>
+                                </div>
+                            </button>
+
+                            <!-- Acheter maintenant -->
+                            <button 
+                                type="button" 
+                                name="buy_now" 
+                                class="product-form__buy-now button button--secondary btn-buy-now"
+                            >
+                                Acheter maintenant
+                            </button>
+                        </div>
+                    </form>
+                </product-form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour le zoom d'image -->
+    <div class="product-media-gallery__modal" data-zoom-modal>
+        <div class="product-media-gallery__modal-content">
+            <button class="product-media-gallery__modal-close" data-zoom-close aria-label="Fermer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <img class="product-media-gallery__modal-image" data-zoom-image alt="">
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/variant-radios.js"></script>
+    <script src="assets/variant-selects.js"></script>
+    <script src="assets/product-form.js"></script>
+    <script src="assets/product-buy-now.js"></script>
+    <script src="assets/product-media-gallery.js"></script>
+
+    <script>
+        // Configuration globale pour le test
+        window.routes = {
+            cart_add_url: '/cart/add',
+            cart_change_url: '/cart/change',
+            cart_update_url: '/cart/update',
+            cart_url: '/cart',
+            predictive_search_url: '/search/suggest'
+        };
+
+        window.variantStrings = {
+            addToCart: 'Ajouter au panier',
+            soldOut: 'Rupture de stock',
+            unavailable: 'Non disponible',
+            unitPrice: 'Prix unitaire'
+        };
+
+        // Simulation d'un produit
+        window.product = {
+            id: 123456789,
+            title: 'Produit Test - T-Shirt Premium',
+            variants: [
+                {
+                    id: 123456789,
+                    title: 'Bleu / S',
+                    option1: 'Bleu',
+                    option2: 'S',
+                    option3: null,
+                    options: ['Bleu', 'S'],
+                    price: 2399,
+                    compare_at_price: 2999,
+                    available: true,
+                    featured_media: {
+                        id: 1,
+                        alt: 'Produit image 1'
+                    },
+                    featured_image: {
+                        src: 'https://via.placeholder.com/600x600/4285f4/ffffff?text=Image+1',
+                        alt: 'Produit image 1'
+                    }
+                },
+                {
+                    id: 123456790,
+                    title: 'Rose / S',
+                    option1: 'Rose',
+                    option2: 'S',
+                    option3: null,
+                    options: ['Rose', 'S'],
+                    price: 2399,
+                    compare_at_price: 2999,
+                    available: true,
+                    featured_media: {
+                        id: 2,
+                        alt: 'Produit image 2'
+                    },
+                    featured_image: {
+                        src: 'https://via.placeholder.com/600x600/ea4c89/ffffff?text=Image+2',
+                        alt: 'Produit image 2'
+                    }
+                }
+            ]
+        };
+
+        window.productVariants = window.product.variants;
+
+        // Initialisation après le chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page de test chargée - Tous les composants devraient être fonctionnels');
+            
+            // Test de la galerie médias
+            const mediaGallery = document.querySelector('product-media-gallery');
+            if (mediaGallery) {
+                console.log('✅ Galerie médias initialisée');
+            }
+            
+            // Test des variantes
+            const variantSelects = document.querySelector('variant-selects');
+            if (variantSelects) {
+                console.log('✅ Sélecteur de variantes initialisé');
+            }
+            
+            // Test du formulaire produit
+            const productForm = document.querySelector('product-form');
+            if (productForm) {
+                console.log('✅ Formulaire produit initialisé');
+            }
+            
+            // Test du bouton Buy Now
+            const buyNowButton = document.querySelector('[name="buy_now"]');
+            if (buyNowButton) {
+                console.log('✅ Bouton Buy Now initialisé');
+            }
+        });
+    </script>
+</body>
+</html>
