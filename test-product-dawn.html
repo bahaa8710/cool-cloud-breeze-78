@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page Produit Dawn</title>
+    
+    <!-- CSS Dawn -->
+    <link rel="stylesheet" href="assets/section-main-product.css">
+    <link rel="stylesheet" href="assets/component-product-variant-picker.css">
+    <link rel="stylesheet" href="assets/component-swatch-input.css">
+    <link rel="stylesheet" href="assets/component-swatch.css">
+    <link rel="stylesheet" href="assets/component-price.css">
+    <link rel="stylesheet" href="assets/component-slider.css">
+    
+    <!-- CSS Custom -->
+    <link rel="stylesheet" href="assets/component-product-media-gallery.css">
+    <link rel="stylesheet" href="assets/component-product-form.css">
+    
+    <style>
+        /* Styles de base pour le test */
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .page-width { max-width: 1200px; margin: 0 auto; }
+        .grid { display: grid; gap: 2rem; }
+        .grid--2-col-tablet { grid-template-columns: 1fr 1fr; }
+        @media (max-width: 749px) { 
+            .grid--2-col-tablet { grid-template-columns: 1fr; } 
+        }
+        
+        /* Styles pour les tests de variantes */
+        .product-form__input--swatch .swatch-input__label {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            margin: 5px;
+            cursor: pointer;
+        }
+        
+        .product-form__input--pill label {
+            display: inline-block;
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        input[type="radio"]:checked + label {
+            border-color: #000;
+            background-color: #f0f0f0;
+        }
+        
+        .product-form__submit {
+            background: #000;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .button--secondary {
+            background: #f0f0f0;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-width">
+        <h1>Test Page Produit Dawn - Fonctionnalités</h1>
+        
+        <!-- Simulation d'un produit avec variantes -->
+        <product-info id="MainProduct-test" data-section="test" data-product-id="123">
+            <div class="grid grid--2-col-tablet">
+                
+                <!-- Galerie média simulée -->
+                <div class="grid__item">
+                    <media-gallery id="MediaGallery-test">
+                        <div style="background: #f0f0f0; height: 400px; display: flex; align-items: center; justify-content: center;">
+                            <p>Galerie Média Dawn<br>(Images, Vidéos, 3D)</p>
+                        </div>
+                    </media-gallery>
+                </div>
+                
+                <!-- Informations produit -->
+                <div class="grid__item">
+                    <section id="ProductInfo-test">
+                        <h1>Produit Test Dawn</h1>
+                        
+                        <!-- Prix -->
+                        <div class="price price--large">
+                            <span class="price-item price-item--regular">29,99 €</span>
+                        </div>
+                        
+                        <!-- Sélecteur de variantes -->
+                        <variant-selects id="variant-selects-test" data-section="test">
+                            
+                            <!-- Couleur avec swatches -->
+                            <fieldset class="js product-form__input product-form__input--swatch">
+                                <legend class="form__label">
+                                    Couleur: <span data-selected-value>Rouge</span>
+                                </legend>
+                                
+                                <input type="radio" id="test-1-0" name="Couleur-1" value="Rouge" form="product-form-test" checked>
+                                <label for="test-1-0" class="swatch-input__label" title="Rouge">
+                                    <span class="swatch" style="--swatch--background: red;"></span>
+                                    <span class="visually-hidden">Rouge</span>
+                                </label>
+                                
+                                <input type="radio" id="test-1-1" name="Couleur-1" value="Bleu" form="product-form-test">
+                                <label for="test-1-1" class="swatch-input__label" title="Bleu">
+                                    <span class="swatch" style="--swatch--background: blue;"></span>
+                                    <span class="visually-hidden">Bleu</span>
+                                </label>
+                                
+                                <input type="radio" id="test-1-2" name="Couleur-1" value="Vert" form="product-form-test">
+                                <label for="test-1-2" class="swatch-input__label" title="Vert">
+                                    <span class="swatch" style="--swatch--background: green;"></span>
+                                    <span class="visually-hidden">Vert</span>
+                                </label>
+                            </fieldset>
+                            
+                            <!-- Taille avec boutons -->
+                            <fieldset class="js product-form__input product-form__input--pill">
+                                <legend class="form__label">Taille</legend>
+                                
+                                <input type="radio" id="test-2-0" name="Taille-2" value="S" form="product-form-test">
+                                <label for="test-2-0">S</label>
+                                
+                                <input type="radio" id="test-2-1" name="Taille-2" value="M" form="product-form-test" checked>
+                                <label for="test-2-1">M</label>
+                                
+                                <input type="radio" id="test-2-2" name="Taille-2" value="L" form="product-form-test">
+                                <label for="test-2-2">L</label>
+                                
+                                <input type="radio" id="test-2-3" name="Taille-2" value="XL" form="product-form-test" disabled>
+                                <label for="test-2-3">XL <span class="visually-hidden">(Non disponible)</span></label>
+                            </fieldset>
+                            
+                            <script type="application/json" data-selected-variant>
+                                {"id": 123, "available": true, "price": 2999, "title": "Rouge / M"}
+                            </script>
+                        </variant-selects>
+                        
+                        <!-- Sélecteur de quantité -->
+                        <div class="product-form__input product-form__quantity">
+                            <label class="quantity__label form__label" for="Quantity-test">
+                                <span>Quantité</span>
+                            </label>
+                            <quantity-input class="quantity">
+                                <button class="quantity__button" name="minus" type="button">
+                                    <span class="visually-hidden">Diminuer la quantité</span>
+                                    <span>−</span>
+                                </button>
+                                <input class="quantity__input" type="number" name="quantity" id="Quantity-test" min="1" value="1" form="product-form-test">
+                                <button class="quantity__button" name="plus" type="button">
+                                    <span class="visually-hidden">Augmenter la quantité</span>
+                                    <span>+</span>
+                                </button>
+                            </quantity-input>
+                        </div>
+                        
+                        <!-- Boutons d'achat Dawn -->
+                        <product-form class="product-form" data-section-id="test">
+                            <div class="product-form__error-message-wrapper" role="alert" hidden>
+                                <span class="product-form__error-message"></span>
+                            </div>
+                            
+                            <form id="product-form-test" class="form" novalidate="novalidate" data-type="add-to-cart-form">
+                                <input type="hidden" name="id" value="123" class="product-variant-id">
+                                
+                                <div class="product-form__buttons">
+                                    <!-- Bouton Ajouter au panier -->
+                                    <button id="ProductSubmitButton-test" type="submit" name="add" class="product-form__submit button button--secondary">
+                                        <span>Ajouter au panier</span>
+                                        <div class="loading__spinner hidden" style="display: none;">
+                                            <span>Chargement...</span>
+                                        </div>
+                                    </button>
+                                    
+                                    <!-- Bouton de paiement dynamique (Shop Pay simulation) -->
+                                    <div class="dynamic-checkout-buttons" style="margin-top: 10px;">
+                                        <button type="button" class="product-form__submit button button--primary" style="background: #5a31f4; color: white;">
+                                            <span>Shop Pay - Acheter maintenant</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </product-form>
+                        
+                        <!-- Textes sous les boutons -->
+                        <div class="product__tax caption rte" style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                            <p>Taxes incluses. Frais de port calculés à la caisse.</p>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="product__description rte">
+                            <p>Description du produit avec toutes les fonctionnalités Dawn intégrées.</p>
+                        </div>
+                        
+                        <!-- Partage -->
+                        <share-button id="Share-test" class="share-button">
+                            <details>
+                                <summary class="share-button__button">
+                                    <span>Partager</span>
+                                </summary>
+                                <div class="share-button__fallback">
+                                    <input type="text" value="https://example.com/product" readonly onclick="this.select();">
+                                    <button class="share-button__copy">Copier</button>
+                                </div>
+                            </details>
+                        </share-button>
+                    </section>
+                </div>
+            </div>
+        </product-info>
+    </div>
+    
+    <!-- Scripts Dawn -->
+    <script src="assets/constants.js"></script>
+    <script src="assets/pubsub.js"></script>
+    <script src="assets/global.js"></script>
+    <script src="assets/product-info.js"></script>
+    <script src="assets/product-form.js"></script>
+    <script src="assets/media-gallery.js"></script>
+    <script src="assets/share.js"></script>
+    
+    <script>
+        // Test des fonctionnalités
+        console.log('🚀 Page produit Dawn chargée avec succès !');
+        
+        // Vérification des composants
+        setTimeout(() => {
+            console.log('✅ Composants détectés:');
+            console.log('- product-info:', !!customElements.get('product-info'));
+            console.log('- variant-selects:', !!customElements.get('variant-selects'));
+            console.log('- product-form:', !!customElements.get('product-form'));
+            console.log('- media-gallery:', !!customElements.get('media-gallery'));
+            console.log('- share-button:', !!customElements.get('share-button'));
+            console.log('- quantity-input:', !!customElements.get('quantity-input'));
+        }, 100);
+        
+        // Test changement de variante
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'radio') {
+                console.log('🎨 Variante changée:', e.target.name, '=', e.target.value);
+                
+                // Simulation mise à jour prix
+                const priceElement = document.querySelector('.price-item--regular');
+                const prices = {'Rouge': '29,99 €', 'Bleu': '34,99 €', 'Vert': '31,99 €'};
+                if (e.target.name.includes('Couleur') && prices[e.target.value]) {
+                    priceElement.textContent = prices[e.target.value];
+                    console.log('💰 Prix mis à jour:', prices[e.target.value]);
+                }
+            }
+        });
+        
+        // Test ajout au panier
+        document.getElementById('product-form-test').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('🛒 Ajout au panier simulé !');
+            alert('✅ Produit ajouté au panier !\n(Simulation - toutes les fonctionnalités Dawn sont actives)');
+        });
+    </script>
+</body>
+</html>
