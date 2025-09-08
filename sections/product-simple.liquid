@@ -1,0 +1,291 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<!-- Styles de base -->
+<style>
+  .product-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+  .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  @media (max-width: 768px) { .product-grid { grid-template-columns: 1fr; } }
+  
+  .product-images { position: relative; }
+  .product-image { width: 100%; height: auto; }
+  .product-thumbnails { display: flex; gap: 10px; margin-top: 10px; }
+  .product-thumbnail { width: 80px; height: 80px; object-fit: cover; cursor: pointer; border: 2px solid transparent; }
+  .product-thumbnail.active { border-color: #000; }
+  
+  .product-info h1 { font-size: 2rem; margin-bottom: 20px; }
+  .product-price { font-size: 1.5rem; font-weight: bold; margin-bottom: 20px; }
+  .product-price .compare-price { text-decoration: line-through; color: #666; margin-right: 10px; }
+  
+  .variant-selector { margin-bottom: 20px; }
+  .variant-selector label { display: block; font-weight: bold; margin-bottom: 10px; }
+  .variant-options { display: flex; gap: 10px; flex-wrap: wrap; }
+  .variant-option { position: relative; }
+  .variant-option input { position: absolute; opacity: 0; }
+  .variant-option label { 
+    display: block; padding: 10px 15px; border: 2px solid #ddd; cursor: pointer; 
+    background: white; transition: all 0.3s;
+  }
+  .variant-option input:checked + label { border-color: #000; background: #f0f0f0; }
+  .variant-option input:disabled + label { opacity: 0.5; cursor: not-allowed; }
+  
+  .color-swatch { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ddd; }
+  .color-swatch.red { background: #ff0000; }
+  .color-swatch.blue { background: #0000ff; }
+  .color-swatch.green { background: #00ff00; }
+  .color-swatch.black { background: #000000; }
+  .color-swatch.white { background: #ffffff; }
+  
+  .quantity-selector { margin-bottom: 20px; }
+  .quantity-input { display: flex; align-items: center; gap: 10px; }
+  .quantity-btn { width: 40px; height: 40px; border: 1px solid #ddd; background: white; cursor: pointer; }
+  .quantity-number { width: 60px; height: 40px; text-align: center; border: 1px solid #ddd; }
+  
+  .product-buttons { margin-bottom: 20px; }
+  .btn-primary { 
+    width: 100%; padding: 15px; background: #000; color: white; border: none; 
+    cursor: pointer; font-size: 1rem; margin-bottom: 10px;
+  }
+  .btn-secondary { 
+    width: 100%; padding: 15px; background: #5a31f4; color: white; border: none; 
+    cursor: pointer; font-size: 1rem;
+  }
+  
+  .product-description { margin-top: 20px; }
+  .tax-info { font-size: 0.9rem; color: #666; margin-top: 10px; }
+</style>
+
+<div class="product-container">
+  <div class="product-grid">
+    
+    <!-- Images du produit -->
+    <div class="product-images">
+      <div id="main-image">
+        {%- if product.featured_media -%}
+          <img src="{{ product.featured_media | image_url: width: 600 }}" alt="{{ product.featured_media.alt | escape }}" class="product-image" id="current-image">
+        {%- else -%}
+          <div style="width: 100%; height: 400px; background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+            <p>Aucune image disponible</p>
+          </div>
+        {%- endif -%}
+      </div>
+      
+      {%- if product.media.size > 1 -%}
+        <div class="product-thumbnails">
+          {%- for media in product.media limit: 5 -%}
+            <img src="{{ media | image_url: width: 100 }}" alt="{{ media.alt | escape }}" 
+                 class="product-thumbnail {% if forloop.first %}active{% endif %}" 
+                 onclick="changeMainImage('{{ media | image_url: width: 600 }}', this)">
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+    
+    <!-- Informations produit -->
+    <div class="product-info">
+      <h1>{{ product.title }}</h1>
+      
+      <!-- Prix -->
+      <div class="product-price">
+        <span id="current-price">
+          {%- if current_variant.compare_at_price > current_variant.price -%}
+            <span class="compare-price">{{ current_variant.compare_at_price | money }}</span>
+          {%- endif -%}
+          {{ current_variant.price | money }}
+        </span>
+      </div>
+      
+      <!-- Formulaire produit -->
+      <form action="/cart/add" method="post" enctype="multipart/form-data" id="product-form">
+        <input type="hidden" name="id" value="{{ current_variant.id }}" id="variant-id">
+        
+        {%- unless product.has_only_default_variant -%}
+          {%- for option in product.options_with_values -%}
+            <div class="variant-selector">
+              <label>{{ option.name }}:</label>
+              <div class="variant-options">
+                {%- for value in option.values -%}
+                  <div class="variant-option">
+                    <input type="radio" 
+                           id="option-{{ option.position }}-{{ forloop.index }}"
+                           name="options[{{ option.name | escape }}]" 
+                           value="{{ value | escape }}"
+                           {% if option.selected_value == value %}checked{% endif %}
+                           onchange="updateVariant()">
+                    <label for="option-{{ option.position }}-{{ forloop.index }}">
+                      {%- if option.name contains 'Couleur' or option.name contains 'Color' -%}
+                        <div class="color-swatch {{ value | downcase | handle }}"></div>
+                      {%- else -%}
+                        {{ value }}
+                      {%- endif -%}
+                    </label>
+                  </div>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endunless -%}
+        
+        <!-- Quantité -->
+        <div class="quantity-selector">
+          <label>Quantité:</label>
+          <div class="quantity-input">
+            <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">−</button>
+            <input type="number" name="quantity" value="1" min="1" class="quantity-number" id="quantity">
+            <button type="button" class="quantity-btn" onclick="changeQuantity(1)">+</button>
+          </div>
+        </div>
+        
+        <!-- Boutons d'achat -->
+        <div class="product-buttons">
+          <button type="submit" class="btn-primary" id="add-to-cart">
+            {%- if current_variant.available -%}
+              Ajouter au panier
+            {%- else -%}
+              Rupture de stock
+            {%- endif -%}
+          </button>
+          
+          {%- if current_variant.available -%}
+            <button type="button" class="btn-secondary" onclick="buyNow()">
+              Shop Pay - Acheter maintenant
+            </button>
+          {%- endif -%}
+        </div>
+        
+        <!-- Informations de livraison -->
+        <div class="tax-info">
+          <p>Taxes incluses. Frais de port calculés à la caisse.</p>
+        </div>
+      </form>
+      
+      <!-- Description -->
+      {%- if product.description != blank -%}
+        <div class="product-description">
+          <h3>Description</h3>
+          {{ product.description }}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  // Données des variantes
+  const variants = {{ product.variants | json }};
+  const productOptions = {{ product.options | json }};
+  
+  // Fonction pour changer l'image principale
+  function changeMainImage(src, thumbnail) {
+    document.getElementById('current-image').src = src;
+    document.querySelectorAll('.product-thumbnail').forEach(thumb => thumb.classList.remove('active'));
+    thumbnail.classList.add('active');
+  }
+  
+  // Fonction pour changer la quantité
+  function changeQuantity(change) {
+    const quantityInput = document.getElementById('quantity');
+    let newQuantity = parseInt(quantityInput.value) + change;
+    if (newQuantity < 1) newQuantity = 1;
+    quantityInput.value = newQuantity;
+  }
+  
+  // Fonction pour mettre à jour la variante
+  function updateVariant() {
+    const selectedOptions = [];
+    
+    // Récupérer les options sélectionnées
+    productOptions.forEach((option, index) => {
+      const selectedInput = document.querySelector(`input[name="options[${option}]"]:checked`);
+      if (selectedInput) {
+        selectedOptions[index] = selectedInput.value;
+      }
+    });
+    
+    // Trouver la variante correspondante
+    const selectedVariant = variants.find(variant => {
+      return selectedOptions.every((option, index) => {
+        return variant.options[index] === option;
+      });
+    });
+    
+    if (selectedVariant) {
+      // Mettre à jour le prix
+      const priceElement = document.getElementById('current-price');
+      let priceHTML = '';
+      if (selectedVariant.compare_at_price > selectedVariant.price) {
+        priceHTML += `<span class="compare-price">${formatMoney(selectedVariant.compare_at_price)}</span>`;
+      }
+      priceHTML += formatMoney(selectedVariant.price);
+      priceElement.innerHTML = priceHTML;
+      
+      // Mettre à jour l'ID de variante
+      document.getElementById('variant-id').value = selectedVariant.id;
+      
+      // Mettre à jour le bouton d'achat
+      const addToCartBtn = document.getElementById('add-to-cart');
+      if (selectedVariant.available) {
+        addToCartBtn.textContent = 'Ajouter au panier';
+        addToCartBtn.disabled = false;
+      } else {
+        addToCartBtn.textContent = 'Rupture de stock';
+        addToCartBtn.disabled = true;
+      }
+      
+      // Mettre à jour l'image si la variante a une image
+      if (selectedVariant.featured_media) {
+        const newImageSrc = selectedVariant.featured_media.preview_image.src.replace(/\.(jpg|jpeg|gif|png|bmp|bitmap|tiff|tif)(\?.*)?$/i, '_600x.$1$2');
+        changeMainImage(newImageSrc, document.querySelector('.product-thumbnail'));
+      }
+    }
+  }
+  
+  // Fonction pour formater le prix
+  function formatMoney(cents) {
+    return (cents / 100).toFixed(2).replace('.', ',') + ' €';
+  }
+  
+  // Fonction "Acheter maintenant"
+  function buyNow() {
+    alert('Fonction "Acheter maintenant" - Redirection vers le checkout rapide');
+    // Ici vous pouvez ajouter la logique pour Shop Pay ou checkout rapide
+  }
+  
+  // Gestion du formulaire d'ajout au panier
+  document.getElementById('product-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('/cart/add.js', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert('✅ Produit ajouté au panier !');
+      console.log('Produit ajouté:', data);
+    })
+    .catch(error => {
+      alert('❌ Erreur lors de l\'ajout au panier');
+      console.error('Erreur:', error);
+    });
+  });
+  
+  console.log('🚀 Page produit chargée avec succès !');
+  console.log('Variantes disponibles:', variants.length);
+  console.log('Options produit:', productOptions);
+</script>
+
+{% schema %}
+{
+  "name": "Produit Simple",
+  "settings": [
+    {
+      "type": "text",
+      "id": "custom_text",
+      "label": "Texte personnalisé",
+      "default": "Page produit fonctionnelle"
+    }
+  ]
+}
+{% endschema %}
