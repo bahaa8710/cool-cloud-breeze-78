@@ -103,8 +103,13 @@
       "vendor": "Vendeur",
       "include_taxes": "Taxes incluses",
       "shipping_policy_html": "Frais de port calculés à la caisse",
+      "duties_and_taxes_included": "Droits de douane et taxes inclus",
+      "duties_included": "Droits de douane inclus",
+      "taxes_included": "Taxes incluses",
       "recurring_purchase": "Cet article est un achat récurrent ou différé. En continuant, j'accepte la <a href=\"%{policy_url}\">politique d'annulation</a> et vous autorise à débiter ma méthode de paiement aux prix, fréquence et dates indiqués sur cette page jusqu'à ce que ma commande soit traitée ou que j'annule, si autorisé.",
       "variant_sold_out_or_unavailable": "Variante épuisée ou non disponible",
+      "value_unavailable": "{{ option_value }} - Non disponible",
+      "view_full_details": "Afficher tous les détails",
       "video_exit_message": "{{ title }} ouvre une vidéo en plein écran dans la même fenêtre.",
       "xr_button": "Voir dans votre espace",
       "xr_button_label": "Voir dans votre espace, charge l'élément dans la fenêtre de réalité augmentée",
@@ -121,7 +126,29 @@
         "open_featured_media": "Ouvrir le média sélectionné {{ index }} dans la vue de la galerie",
         "open_media": "Ouvrir le média {{ index }} dans la vue de la galerie",
         "play_model": "Lire le visualiseur 3D",
-        "play_video": "Lire la vidéo"
+        "play_video": "Lire la vidéo",
+        "gallery_viewer": "Visionneuse de galerie",
+        "load_image": "Charger l'image {{ index }} dans la vue galerie",
+        "load_model": "Charger le modèle 3D {{ index }} dans la vue galerie",
+        "load_video": "Charger la vidéo {{ index }} dans la vue galerie"
+      },
+      "volume_pricing": {
+        "title": "Tarification en volume",
+        "note": "Prix par unité disponible",
+        "minimum": "{{ quantity }}+",
+        "price_at_each": "{{ price }}/unité",
+        "price_range": "{{ minimum }} - {{ maximum }}"
+      },
+      "quantity": {
+        "label": "Quantité",
+        "input_label": "Quantité pour {{ product }}",
+        "increase": "Augmenter la quantité pour {{ product }}",
+        "decrease": "Diminuer la quantité pour {{ product }}",
+        "minimum_of": "Minimum de {{ quantity }}",
+        "maximum_of": "Maximum de {{ quantity }}",
+        "multiples_of": "Multiples de {{ quantity }}",
+        "in_cart_html": "<span class=\"quantity-cart\">{{ quantity }} dans le panier</span>",
+        "in_cart_aria_label": "{{ quantity }} dans le panier"
       }
     },
     "modal": {
