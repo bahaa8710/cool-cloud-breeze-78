@@ -109,7 +109,9 @@ class ProductBuyNow extends HTMLElement {
 }
 
 // Enregistrement du custom element
-customElements.define('product-buy-now', ProductBuyNow);
+if (!customElements.get('product-buy-now')) {
+  customElements.define('product-buy-now', ProductBuyNow);
+}
 
 // Initialisation globale pour les boutons Buy Now
 document.addEventListener('DOMContentLoaded', function() {

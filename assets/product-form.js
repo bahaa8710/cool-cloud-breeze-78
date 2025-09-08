@@ -121,5 +121,9 @@ class QuantityInput extends HTMLElement {
 }
 
 // Enregistrement des custom elements
-customElements.define('product-form', ProductForm);
-customElements.define('quantity-input', QuantityInput);
+if (!customElements.get('product-form')) {
+  customElements.define('product-form', ProductForm);
+}
+if (!customElements.get('quantity-input')) {
+  customElements.define('quantity-input', QuantityInput);
+}

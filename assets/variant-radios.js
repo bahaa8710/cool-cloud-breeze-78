@@ -187,10 +187,23 @@ class VariantRadios extends HTMLElement {
   }
 
   getVariantData() {
-    this.variantData = this.variantData || JSON.parse(document.getElementById(`product-json-${this.dataset.section}`).textContent);
-    return this.variantData;
+    if (this.variantData) return this.variantData;
+    const jsonEl = document.getElementById(`product-json-${this.dataset.section}`);
+    try {
+      if (jsonEl && jsonEl.textContent.trim()) {
+        this.variantData = JSON.parse(jsonEl.textContent);
+        return this.variantData;
+      }
+    } catch (e) {}
+    if (window.productVariants && Array.isArray(window.productVariants)) {
+      this.variantData = window.productVariants;
+      return this.variantData;
+    }
+    return [];
   }
 }
 
 // Enregistrement du custom element
-customElements.define('variant-radios', VariantRadios);
+if (!customElements.get('variant-radios')) {
+  customElements.define('variant-radios', VariantRadios);
+}

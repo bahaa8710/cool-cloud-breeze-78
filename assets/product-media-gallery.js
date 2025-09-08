@@ -172,4 +172,6 @@ class ProductMediaGallery extends HTMLElement {
 }
 
 // Enregistrement du custom element
-customElements.define('product-media-gallery', ProductMediaGallery);
+if (!customElements.get('product-media-gallery')) {
+  customElements.define('product-media-gallery', ProductMediaGallery);
+}
