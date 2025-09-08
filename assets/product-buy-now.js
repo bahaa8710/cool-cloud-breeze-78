@@ -87,7 +87,8 @@ class ProductBuyNow extends HTMLElement {
   }
 
   handleErrorMessage(errorMessage = false) {
-    const errorMessageWrapper = this.querySelector('.product-form__error-message-wrapper');
+    const productForm = this.closest('product-form');
+    const errorMessageWrapper = productForm ? productForm.querySelector('.product-form__error-message-wrapper') : null;
     if (!errorMessageWrapper) return;
     
     const errorMessageElement = errorMessageWrapper.querySelector('.product-form__error-message');

@@ -75,22 +75,27 @@ class ProductMediaGallery extends HTMLElement {
   }
 
   setupZoom() {
-    const zoomBtn = this.querySelector('[data-zoom-trigger]');
+    const zoomBtns = this.querySelectorAll('[data-zoom-trigger]');
     const modal = this.querySelector('[data-zoom-modal]');
     const modalImage = this.querySelector('[data-zoom-image]');
     const closeBtn = this.querySelector('[data-zoom-close]');
     
-    if (!zoomBtn || !modal || !modalImage) return;
+    if (!modal || !modalImage) return;
     
-    zoomBtn.addEventListener('click', () => {
-      const currentImage = this.slides[this.currentSlide].querySelector('.product-media-gallery__image');
-      if (currentImage) {
-        const zoomSrc = currentImage.dataset.zoom || currentImage.src;
-        modalImage.src = zoomSrc;
-        modalImage.alt = currentImage.alt;
-        this.openZoom();
-      }
-    });
+    if (zoomBtns.length) {
+      zoomBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const slide = btn.closest('.product-media-gallery__slide') || this.slides[this.currentSlide];
+          const image = slide ? slide.querySelector('.product-media-gallery__image') : null;
+          if (image) {
+            const zoomSrc = image.dataset.zoom || image.src;
+            modalImage.src = zoomSrc;
+            modalImage.alt = image.alt || '';
+            this.openZoom();
+          }
+        });
+      });
+    }
     
     if (closeBtn) {
       closeBtn.addEventListener('click', () => this.closeZoom());

@@ -169,6 +169,7 @@
                       <!-- Checkout dynamique -->
                       {%- if section.settings.show_dynamic_checkout -%}
                         {{ form | payment_button }}
+                        {{ form | payment_terms }}
                       {%- endif -%}
                     </div>
 
