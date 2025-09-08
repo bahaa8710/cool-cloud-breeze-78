@@ -118,6 +118,16 @@ class VariantSelects extends HTMLElement {
           !this.currentVariant.available,
           this.currentVariant.available ? '' : window.variantStrings.soldOut
         );
+
+        // Mettre à jour le bouton Buy Now et dynamic checkout selon la dispo
+        const form = document.getElementById(`product-form-${sectionId}`);
+        if (form) {
+          const buyNow = form.querySelector('[name="buy_now"]');
+          if (buyNow) {
+            if (!this.currentVariant.available) buyNow.setAttribute('disabled', 'disabled');
+            else buyNow.removeAttribute('disabled');
+          }
+        }
       });
   }
 
